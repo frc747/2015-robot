@@ -8,16 +8,18 @@ public class Tugger implements Runnable{
 	private CANTalon motor;
 	private DigitalInput innerLimit, outterLimit;
 	private double[] positions;
+	private double direction;
 	
 	private boolean moveToDest = false;
 	private int positionNum = 0;
 	private boolean running = false;
 	private Thread thread;
 	
-	public Tugger(CANTalon motor, DigitalInput lowerLimit, DigitalInput upperLimit, double[] positions){
+	public Tugger(CANTalon motor, DigitalInput lowerLimit, DigitalInput upperLimit, double[] positions, double direction){
 		this.motor = motor;
 		this.innerLimit = lowerLimit;
 		this.outterLimit = upperLimit;
+		this.direction = direction;
 		
 		this.positions = positions;
 		this.thread = new Thread(this);
@@ -26,13 +28,13 @@ public class Tugger implements Runnable{
 	
 	public void moveOut(double speed){
 		if(!this.outterLimit.get())
-			this.motor.set(speed);
+			this.motor.set(speed * this.direction);
 		this.moveToDest = false;
 	}
 	
 	public void moveIn(double speed){
 		if(!this.innerLimit.get())
-			this.motor.set(-speed);
+			this.motor.set(-speed * this.direction);
 		this.moveToDest = false;
 	}
 	
@@ -49,15 +51,37 @@ public class Tugger implements Runnable{
 			this.moveToDest = true;
 		}
 	}
+	
+	public void calibrateOut(){
+		this.moveToDest = false;
+		while(this.outterLimit.get()){
+			this.motor.set(1 * this.direction);
+		}
+		
+		this.positionNum = this.positions.length - 1;
+		
+		//TODO reset encoder
+	}
+	
+	public void calibrateIn(){
+		this.moveToDest = false;
+		while(this.innerLimit.get()){
+			this.motor.set(-1 * this.direction);
+		}
+		
+		this.positionNum = 0;
+		
+		//TODO reset encoder
+	}
 
 	@Override
 	public void run() {
 		while(this.running){
 			if(this.moveToDest){
 				if(!this.innerLimit.get() && this.positions[positionNum] > this.motor.getPosition()){
-					this.motor.set(-0.5);
+					this.motor.set(-0.5 * this.direction);
 				}else if(!this.outterLimit.get() && this.positions[positionNum] < this.motor.getPosition()){
-					this.motor.set(0.5);
+					this.motor.set(0.5 * this.direction);
 				}else{
 					this.moveToDest = false;
 				}

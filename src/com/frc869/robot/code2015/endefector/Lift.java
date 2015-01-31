@@ -48,6 +48,29 @@ public class Lift implements Runnable {
 			this.moveToDest = true;
 		}
 	}
+	
+	public void calibrateUp(){
+		this.moveToDest = false;
+		while(this.upperLimit.get()){
+			this.motor.set(1);
+		}
+		
+		this.positionNum = this.positions.length - 1;
+		
+		//TODO reset encoder
+		
+	}
+	
+	public void calibrateDown(){
+		this.moveToDest = false;
+		while(this.lowerLimit.get()){
+			this.motor.set(-1);
+		}
+		
+		this.positionNum = 0;
+		
+		//TODO reset encoder
+	}
 
 	@Override
 	public void run() {
