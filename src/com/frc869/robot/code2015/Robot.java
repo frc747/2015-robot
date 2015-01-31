@@ -74,7 +74,7 @@ public class Robot extends SampleRobot {
 
 		// tugger constructors
 		this.tuggerLeft = new Tugger(this.talonLeftTugger, this.tLeftIn, this.tLeftOut, tuggerPos, 1);
-		this.tuggerRight = new Tugger(this.talonRightTugger, this.tRightIn, this.tRightOut, tuggerPos);
+		this.tuggerRight = new Tugger(this.talonRightTugger, this.tRightIn, this.tRightOut, tuggerPos, -1);
 
 		// lift constructor
 		this.lift = new Lift(this.talonLift, this.liftDown, this.liftUp, liftPos);
