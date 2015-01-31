@@ -1,5 +1,7 @@
 package com.frc869.robot.code2015;
 
+//Import necessary assets
+
 import com.frc869.robot.code2015.drive.Mecanum869;
 import com.frc869.robot.code2015.endefector.Lift;
 import com.frc869.robot.code2015.endefector.LiftListener;
@@ -13,7 +15,19 @@ import edu.wpi.first.wpilibj.Gyro;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SampleRobot;
 
+/*
+ * Code for the FRC869 2015 robot
+ * 
+ * The robot is capable of:
+ * Moving via the Mecanum drive code
+ * "Tugging" totes towards the robot
+ * Lifting the totes and placing the totes in a stack
+ */
+
 public class Robot extends SampleRobot {
+	
+	//Establishing all variables to be used in later code
+	
 	private CANTalon rightFront, rightBack, leftBack, leftFront;
 	private CANTalon talonLeftTugger, talonRightTugger;
 	private CANTalon talonLift;
@@ -27,6 +41,8 @@ public class Robot extends SampleRobot {
 	private Tugger tuggerLeft, tuggerRight;
 	private Lift lift;
 
+	//Creates the object "Robot"
+	
 	public Robot() {
 
 		// Drive Motors
@@ -58,7 +74,7 @@ public class Robot extends SampleRobot {
 
 		// tugger constructors
 		this.tuggerLeft = new Tugger(this.talonLeftTugger, this.tLeftIn, this.tLeftOut, tuggerPos, 1);
-		this.tuggerRight = new Tugger(this.talonRightTugger, this.tRightIn, this.tRightOut, tuggerPos, -1);
+		this.tuggerRight = new Tugger(this.talonRightTugger, this.tRightIn, this.tRightOut, tuggerPos);
 
 		// lift constructor
 		this.lift = new Lift(this.talonLift, this.liftDown, this.liftUp, liftPos);
@@ -70,10 +86,14 @@ public class Robot extends SampleRobot {
 		this.operator.addEvent("LIFT", new LiftListener(this.lift));
 	}
 
+	//Autonomous period
+	
 	public void autonomous() {
 		super.autonomous();
 	}
 
+	//Code which speaks to operator control
+	
 	public void operatorControl() {
 		this.drive.enable();
 		while (isOperatorControl() && isEnabled()) {

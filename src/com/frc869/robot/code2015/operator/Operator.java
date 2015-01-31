@@ -1,5 +1,7 @@
 package com.frc869.robot.code2015.operator;
 
+//Imports necessary assets
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -9,8 +11,16 @@ import java.util.HashMap;
 
 import com.frc869.robot.code2015.endefector.EndefectorListener;
 
+/*
+ * Code responsible for taking in user input and converting it to commands for the robot
+ * 
+ * We plan to use an Android tablet as our means of providing input
+ */
+
 public class Operator implements Runnable {
 
+	//Establishing all variables to be used in later code
+	
 	private Socket tablet;
 	private final String ip;
 	private final int port;
@@ -23,6 +33,8 @@ public class Operator implements Runnable {
 		this("10.8.69.5", 869);
 	}
 
+	//Creates object "Operator"
+	
 	public Operator(String ip, int port) {
 		this.ip = ip;
 		this.port = port;
@@ -33,6 +45,8 @@ public class Operator implements Runnable {
 		this.events = new HashMap<String, ArrayList<EndefectorListener>>();
 	}
 
+	//Connects to tablet, reads input and triggers events
+	
 	public void run() {
 		BufferedReader br = null;
 		while (true) {
@@ -58,6 +72,8 @@ public class Operator implements Runnable {
 		}
 	}
 
+	//Adds new event to be triggered by remote(tablet) 
+	
 	public void addEvent(String event, EndefectorListener task) {
 		ArrayList<EndefectorListener> eventTasks = this.events.get(event);
 		if (eventTasks == null) {
@@ -68,6 +84,8 @@ public class Operator implements Runnable {
 		eventTasks.add(task);
 	}
 
+	//Execute stored events for a particular event name
+	
 	public void triggerEvent(String event, String arg) {
 		ArrayList<EndefectorListener> eventTasks = this.events.get(event);
 
