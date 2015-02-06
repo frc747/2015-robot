@@ -75,12 +75,12 @@ public class Mecanum869 {
 		
 		//Adds rotation value (z)
 		
-		double a = -yr - z;
+		double a = yr - z;
 		double b = -xr - z;
-		double c = yr - z;
+		double c = -yr - z;
 		double d = xr - z;
 		
-		//Normalizes vector, preventing any value from exceeding ±1 by dividing all values by the greatest value
+		//Normalizes vector, preventing any value from exceeding 1 by dividing all values by the greatest value
 		double n = Math.max(Math.max(Math.abs(a), Math.abs(b)), Math.max(Math.abs(c), Math.abs(d)));
 		
 		if(n > 1){
