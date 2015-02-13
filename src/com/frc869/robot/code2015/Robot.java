@@ -1,3 +1,5 @@
+//MAKE SURE THE ROBOT IS NOT IN TETST MODE BEFORE SWITCHING CODE
+
 package com.frc869.robot.code2015;
 
 //Import necessary assets
@@ -110,15 +112,21 @@ public class Robot extends SampleRobot {
 
 	public void operatorControl() {
 		this.drive.enable();
+		this.gyro.reset();
 		while (isOperatorControl() && isEnabled()) {
 			
-			/* Standard Joystick
-			double y = this.stick.getY();
+			
+			//The following lines up to line 129 are the lines of code for the two different controllers.
+			//The first one is for the joystick controller
+			//The second one is for the gamepad controller      
+			
+			//Standard Joystick
+			/*double y = this.stick.getY();
 			double x = this.stick.getX();
 			double z = this.stick.getZ();
-			
 			*/
 			
+			//Gamepad
 			double x = this.cont.getX();
 			double y = this.cont.getY();
 			double z = this.cont.getTwist();
@@ -133,7 +141,7 @@ public class Robot extends SampleRobot {
 			else {
 				x -= 0.1 * x / Math.abs(x);
 				x /= .9;
-				x *= x * x / Math.abs(x);
+				//x *= x * x / Math.abs(x);
 			}
 
 			if (Math.abs(y) < 0.1) {
@@ -143,7 +151,7 @@ public class Robot extends SampleRobot {
 			else {
 				y -= 0.1 * y / Math.abs(y);
 				y /= .9;
-				y *= y * y / Math.abs(y);
+				//y *= y * y / Math.abs(y);
 			}
 
 			if (Math.abs(z) < 0.1) {
@@ -153,7 +161,7 @@ public class Robot extends SampleRobot {
 			else {
 				z -= 0.1 * z / Math.abs(z);
 				z /= .9;
-				z *= z * z / Math.abs(z);
+				//z *= z * z / Math.abs(z);
 			}
 			
 			System.out.println("X:" + x + " Y:" + y + " R:" + z + " G:" + gyroAng);

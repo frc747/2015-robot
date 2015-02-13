@@ -30,7 +30,7 @@ public class Operator implements Runnable {
 	private HashMap<String, ArrayList<EndefectorListener>> events;
 
 	public Operator() {
-		this("10.8.69.5", 869);
+		this("10.8.69.5", 5809);
 	}
 
 	//Creates object "Operator"
