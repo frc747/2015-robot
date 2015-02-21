@@ -111,11 +111,10 @@ public class Mecanum869 {
 			}
 		}
 		// applying encoder normalization
-
+		
 		for (int i = 0; i < 4; i++) {
 			this.ratio[i] = (power[i] / power[max_p_i])
-					* (this.old_speed[i] / this.old_speed[max_p_i])
-					* this.ratio[i];
+					* (this.old_speed[i] / this.old_speed[max_p_i]);
 		}
 		int max_r_i = 0;
 		for (int i = 1; i < 4; i++) {

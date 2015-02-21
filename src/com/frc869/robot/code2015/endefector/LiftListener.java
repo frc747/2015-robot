@@ -11,6 +11,8 @@ public class LiftListener implements EndefectorListener {
 	
 	@Override
 	public void run(String arg) {
+		System.out.println("Lift " + arg);
+		/*
 		switch(arg){
 		case "DOWN":
 			this.lift.moveDown(-0.5);
@@ -29,5 +31,6 @@ public class LiftListener implements EndefectorListener {
 		default:
 			break;
 		}
+		*/
 	}
 }

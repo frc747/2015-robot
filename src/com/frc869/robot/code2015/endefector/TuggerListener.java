@@ -11,6 +11,8 @@ public class TuggerListener implements EndefectorListener {
 	
 	@Override
 	public void run(String arg) {
+		System.out.println("Tugger " + arg);
+		/*
 		switch(arg){
 		case "IN":
 			this.tugger.moveIn(-0.5);
@@ -28,6 +30,6 @@ public class TuggerListener implements EndefectorListener {
 			break;
 		default:
 			break;
-		}
+		}*/
 	}
 }

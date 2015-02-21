@@ -4,6 +4,7 @@ package com.frc869.robot.code2015.endefector;
 
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Encoder;
 
 /**
  * Code responsible for commanding the lift, which lifts the totes after they've been "Tugged"
@@ -14,7 +15,8 @@ import edu.wpi.first.wpilibj.DigitalInput;
 //Establishing all variables to be used in later code
 
 public class Lift implements Runnable {
-	private CANTalon motor;
+	private CANTalon talonLift1, talonLift2;
+	private Encoder encoder;
 	private DigitalInput lowerLimit, upperLimit;
 	private double[] positions;
 	
@@ -25,8 +27,10 @@ public class Lift implements Runnable {
 	
 	//Creates object "Lift"
 	
-	public Lift(CANTalon motor, DigitalInput lowerLimit, DigitalInput upperLimit, double[] positions){
-		this.motor = motor;
+	public Lift(CANTalon talonLift1, CANTalon talonLift2, Encoder encoder, DigitalInput lowerLimit, DigitalInput upperLimit, double[] positions){
+		this.talonLift1 = talonLift1;
+		this.talonLift2 = talonLift2;
+		this.encoder = encoder;
 		this.lowerLimit = lowerLimit;
 		this.upperLimit = upperLimit;
 		
@@ -38,16 +42,20 @@ public class Lift implements Runnable {
 	//Moves Lift up
 	
 	public void moveUp(double speed){
-		if(!this.upperLimit.get())
-			this.motor.set(speed);
+		//if(!this.upperLimit.get()){
+			this.talonLift1.set(-speed * 0.6);
+			this.talonLift2.set(-speed * 0.6);
+		//}
 		this.moveToDest = false;
 	}
 	
 	//Moves Lift down
 	
 	public void moveDown(double speed){
-		if(!this.lowerLimit.get())
-			this.motor.set(-speed);
+		if(!this.lowerLimit.get()){
+			this.talonLift1.set(speed);
+			this.talonLift2.set(speed);
+		}
 		this.moveToDest = false;
 	}
 	
@@ -74,7 +82,8 @@ public class Lift implements Runnable {
 	public void calibrateUp(){
 		this.moveToDest = false;
 		while(this.upperLimit.get()){
-			this.motor.set(1);
+			this.talonLift1.set(1);
+			this.talonLift2.set(1);
 		}
 		
 		this.positionNum = this.positions.length - 1;
@@ -83,12 +92,13 @@ public class Lift implements Runnable {
 		
 	}
 	
-	//Calibrate lower postion
+	//Calibrate lower position
 	
 	public void calibrateDown(){
 		this.moveToDest = false;
 		while(this.lowerLimit.get()){
-			this.motor.set(-1);
+			this.talonLift1.set(-1);
+			this.talonLift2.set(-1);
 		}
 		
 		this.positionNum = 0;
@@ -96,15 +106,17 @@ public class Lift implements Runnable {
 		//TODO reset encoder
 	}
 
-	//Autmoated moving control to preset conditions
+	//Automated moving control to preset conditions
 	@Override
 	public void run() {
 		while(this.running){
 			if(this.moveToDest){
-				if(!this.lowerLimit.get() && this.positions[positionNum] > this.motor.getPosition()){
-					this.motor.set(-0.5);
-				}else if(!this.upperLimit.get() && this.positions[positionNum] < this.motor.getPosition()){
-					this.motor.set(0.5);
+				if(!this.lowerLimit.get() && this.positions[positionNum] > this.encoder.get()){
+					this.talonLift1.set(-0.5);
+					this.talonLift2.set(-0.5);
+				}else if(!this.upperLimit.get() && this.positions[positionNum] < this.encoder.get()){
+					this.talonLift1.set(0.5);
+					this.talonLift2.set(0.5);
 				}else{
 					this.moveToDest = false;
 				}
