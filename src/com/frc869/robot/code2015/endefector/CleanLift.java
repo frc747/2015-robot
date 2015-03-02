@@ -57,14 +57,18 @@ public class CleanLift implements Runnable {
 				this.talonLift1.set(speed);
 				this.talonLift2.set(speed);
 			} else {
-				encoderMax = encoder.get();
+				//encoderMax = encoder.get();
+				this.talonLift1.set(0);
+				this.talonLift2.set(0);
 			}
 		} else if(speed < 0) {
 			if(this.lowerLimit.get()) {
 				this.talonLift1.set(speed);
 				this.talonLift2.set(speed);
 			} else {
-				encoderMin = encoder.get();
+				//encoderMin = encoder.get();
+				this.talonLift1.set(0);
+				this.talonLift2.set(0);
 			}
 		} else {
 			this.talonLift1.set(0);
