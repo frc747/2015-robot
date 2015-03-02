@@ -2,21 +2,25 @@
 
 package com.frc869.robot.code2015;
 
-//Import necessary assets
+//Import necessary assetss
 
 import com.frc869.robot.code2015.drive.Mecanum869;
+import com.frc869.robot.code2015.endefector.CleanLift;
 import com.frc869.robot.code2015.endefector.Lift;
+import com.frc869.robot.code2015.endefector.Lift2;
 import com.frc869.robot.code2015.endefector.LiftListener;
 import com.frc869.robot.code2015.endefector.Tugger;
 import com.frc869.robot.code2015.endefector.TuggerListener;
 import com.frc869.robot.code2015.operator.Operator;
 
 import edu.wpi.first.wpilibj.CANTalon;
+import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DigitalSource;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.Gyro;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Joystick.RumbleType;
 import edu.wpi.first.wpilibj.SampleRobot;
 
 /*
@@ -30,23 +34,25 @@ import edu.wpi.first.wpilibj.SampleRobot;
 
 public class Robot extends SampleRobot {
 
+	//private final int LiftMax = 4400; // Pre Bag value
+	private final int LiftMax = 28000; //Backup Robot value
+	private final int LiftMin = -150;
 	// Establishing all variables to be used in later code
 
 	private CANTalon rightFront, rightBack, leftBack, leftFront;
 	private CANTalon talonLeftTugger, talonRightTugger;
 	private CANTalon talonLift1, talonLift2;
 	private Mecanum869 drive;
-	private Joystick stick;
+	//private Joystick stick;
 	private Joystick cont, oper;
 	private Gyro gyro;
 	private Operator operator;
 	private Encoder encoder;
 
-	private DigitalInput tLeftIn, tLeftOut, tRightIn, tRightOut, liftUp,
-			liftDown;
+	private DigitalInput tLeftIn, tLeftOut, tRightIn, tRightOut, liftUp, liftDown;
 
 	private Tugger tuggerLeft, tuggerRight;
-	private Lift lift;
+	private CleanLift lift;
 
 	// Creates the object "Robot"
 
@@ -68,14 +74,15 @@ public class Robot extends SampleRobot {
 				this.leftFront, this.leftBack);
 
 		// joystick
-		this.stick = new Joystick(0);
+	//	this.stick = new Joystick(0);
 		this.cont = new Joystick(1);
 		this.oper = new Joystick(2);
 
 		// gyro
 		this.gyro = new Gyro(0);
 
-		this.encoder = new Encoder(0, 1); // Encoder for lift
+		this.encoder = new Encoder(0, 1, false, EncodingType.k1X); // Encoder for lift
+		System.out.println("ES: " + this.encoder.getEncodingScale());
 
 		// digital inputs for the limit switches
 		this.liftUp = new DigitalInput(3); // lift full up limit switch
@@ -88,36 +95,35 @@ public class Robot extends SampleRobot {
 		this.tLeftIn = new DigitalInput(6); // left tugger full in limit switch
 		this.tRightIn = new DigitalInput(7); // right tugger full in limit
 												// switch
+		double[] liftPos = { 1, 100 }; // orders positions for the lift
+		
+		CANTalon[] liftTalons = {talonLift1, talonLift2};
 
-		// position lists for endefectors
-		double[] tuggerPos = { 1, 1.5, 100 }; // order positions for the tuggers
-		double[] liftPos = { 1, 1.5, 100 }; // orders positions for the lift
-
-		// tugger constructors
-		this.tuggerLeft = new Tugger(this.talonLeftTugger, this.tLeftIn,
-				this.tLeftOut, tuggerPos, 1);
-		this.tuggerRight = new Tugger(this.talonRightTugger, this.tRightIn,
-				this.tRightOut, tuggerPos, -1);
-
-		// lift constructor
-		this.lift = new Lift(this.talonLift1, this.talonLift2, encoder,
-				this.liftDown, this.liftUp, liftPos);
-
-		// operator control setup
-		this.operator = new Operator(); // setup operator controller (socket
-										// connection to tablet)
-		this.operator.addEvent("TUGGERLEFT",
-				new TuggerListener(this.tuggerLeft)); // add event for left
-														// tugger
-		this.operator.addEvent("TUGGERRIGHT", new TuggerListener(
-				this.tuggerRight)); // add event for right tugger
-		this.operator.addEvent("LIFT", new LiftListener(this.lift));
+		this.lift = new CleanLift(talonLift1, talonLift2, encoder, liftDown, liftUp, liftPos, LiftMax, LiftMax);
 	}
 
 	// Autonomous period
 
 	public void autonomous() {
-		super.autonomous();
+		this.rightFront.setPosition(0);
+		this.rightBack.setPosition(0);
+		this.leftFront.setPosition(0);
+		this.leftBack.setPosition(0);
+		this.drive.enable();
+		while(this.rightFront.getPosition() < 1080)
+			this.drive.drive(1, 0, 0, 0);
+		while(this.rightFront.getPosition() < 2160)
+			this.drive.drive(0, 1, 0, 0);
+		while(this.rightFront.getPosition() > 1080)
+			this.drive.drive(-1, 0, 0, 0);
+		while(this.rightFront.getPosition() > 0){
+			System.out.println(this.rightFront.getPosition());
+			this.drive.drive(0, -1, 0, 0);
+		}
+		System.out.println("Done!");
+		this.drive.drive(0, 0, 0, 0);
+		this.drive.disable();
+		
 	}
 
 	// Code which speaks to operator control
@@ -139,9 +145,21 @@ public class Robot extends SampleRobot {
 			 */
 
 			// Gamepad
+			//double x = this.cont.getRawAxis(4);
+			//double y = this.cont.getY();
+			//double z = this.cont.getRawAxis(3) - this.cont.getRawAxis(2);
+			
 			double x = this.cont.getX();
 			double y = this.cont.getY();
-			double z = this.cont.getTwist();
+			double z = this.cont.getZ();
+			
+			if(this.cont.getRawButton(6)){
+				if(Math.abs(x) > Math.abs(y)){
+					y = 0;
+				}else if(Math.abs(x) < Math.abs(y)){
+					x = 0;
+				}
+			}
 
 			double gyroAng = this.gyro.getAngle();
 
@@ -174,105 +192,48 @@ public class Robot extends SampleRobot {
 				z /= .9;
 				// z *= z * z / Math.abs(z);
 			}
-
-			// System.out.println("X:" + x + " Y:" + y + " R:" + z + " G:" +
-			// gyroAng);
-			// System.out.println("RF:" + this.rightFront.getPosition() + " RB:"
-			// + this.rightBack.getPosition());
-			// System.out.println("LF:" + this.leftFront.getPosition() + " LB:"
-			// + this.leftBack.getPosition());
-
-			// this.drive.drive(x, y, z, gyroAng); //Disabled gyro for testing
-			this.drive.drive(x * 0.6, y * 0.6, z * 0.6, 0);
-
-			driveLift();
+			
+			//reduce controller input by X% for drive
+			this.drive.drive((x*.65), (y*.65), (z*.65), 0);
+			
+			if(this.oper.getRawButton(1)){
+				System.out.println(this.encoder.get());
+			}else if(this.oper.getRawButton(3)){
+				this.encoder.reset();
+				System.out.println("Clear!");
+			}
+			
+			if(this.oper.getRawButton(6)) {
+				this.lift.setPosition(CleanLift.Position.TOTE1);
+			} else if(this.oper.getRawButton(7)) {
+				this.lift.setPosition(CleanLift.Position.TOTE2);
+			} else if(this.oper.getRawButton(8)) {
+				this.lift.setPosition(CleanLift.Position.TOTE3);
+			} else if(this.oper.getRawButton(9)) {
+				this.lift.setPosition(CleanLift.Position.TOTE4);
+			} else if (this.oper.getRawButton(4)){
+				this.lift.move(.25);
+			} else if (this.oper.getRawButton(1)){
+				this.lift.move(-.25);
+			} else {
+				this.lift.move(0);
+			}
+			
 		}
 		this.drive.disable();
 	}
-
-	/**
-	 * Runs during test mode
-	 */
-	public void test() {
-		/*
-		 * //encoder test this.drive.enable(); while (isTest() && isEnabled()) {
-		 * double x = this.stick.getThrottle(); System.out.println(x);
-		 * this.leftBack.set(x); this.rightBack.set(x); this.leftFront.set(x);
-		 * this.rightFront.set(x); System.out.println("\nTotal:");
-		 * System.out.println("RF:" + this.rightFront.getPosition() + " RB:" +
-		 * this.rightBack.getPosition()); System.out.println("LF:" +
-		 * this.leftFront.getPosition() + " LB:" + this.leftBack.getPosition());
-		 * System.out.println("Speed:"); System.out.println("RF:" +
-		 * this.rightFront.getSpeed() + " RB:" + this.rightBack.getSpeed());
-		 * System.out.println("LF:" + this.leftFront.getSpeed() + " LB:" +
-		 * this.leftBack.getSpeed()); } this.drive.disable();
-		 * 
-		 * //
-		 */
-
-		double sense = 0.005;
-		this.gyro.reset();
-		// this.gyro.setSensitivity(sense);
-		while (isTest() && isEnabled()) {
-			System.out.println(this.gyro.getAngle() + "CALIB: " + sense);
-
-			if (this.cont.getRawButton(1)) {
-				sense += 0.001;
-				this.gyro.setSensitivity(sense);
-				try {
-					Thread.sleep(100);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-			}
+	
+	public void test(){
+		while(this.isEnabled()){
+			System.out.println(this.cont.getRawAxis(3) - this.cont.getRawAxis(2));
+			
 			try {
 				Thread.sleep(10);
 			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
-
-		// */
-
 	}
 
-	public void driveLift() {
-		// System.out.println(this.oper.getX());
-		// this.lift.moveUp(this.oper.getX());
-
-		if (this.oper.getRawButton(1)) {
-			System.out.println(this.encoder.get());
-		} else if (this.oper.getRawButton(3)) {
-			System.out.println("Clear!");
-			this.encoder.reset();
-		}
-
-		double y = this.oper.getY();
-		if (!this.liftDown.get()) {
-			System.out.println("Down!!!");
-			if (y > 0 && !this.oper.getRawButton(2)) {
-				this.lift.moveUp(0);
-				return;
-			}
-		}
-		if (!this.liftUp.get()) {
-			System.out.println("Up!!!");
-			if (y < 0 && !this.oper.getRawButton(2)) {
-				this.lift.moveUp(0);
-				return;
-			}
-		}
-
-		if (!(y < 0) && !this.liftDown.get() && this.encoder.get() < -150
-				|| this.encoder.get() > 4450) {
-			return;
-		}
-		if (!this.liftDown.get() || this.oper.getRawButton(2)
-				|| this.encoder.get() > 4000)
-			this.lift.moveUp(y / 4);
-		else
-			this.lift.moveUp(y);
-
-	}
 }

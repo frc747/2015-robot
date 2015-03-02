@@ -15,10 +15,13 @@ public class LiftListener implements EndefectorListener {
 		/*
 		switch(arg){
 		case "DOWN":
-			this.lift.moveDown(-0.5);
+			this.lift.move(-0.5);
 			break;
-		case "IN":
-			this.lift.moveUp(0.5);
+		case "UP":
+			this.lift.move(0.5);
+			break;
+		case "STOP":
+			this.lift.move(0);
 			break;
 		case "NEXTDOWN":
 		case "PREV":

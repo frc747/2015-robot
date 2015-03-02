@@ -15,10 +15,10 @@ public class TuggerListener implements EndefectorListener {
 		/*
 		switch(arg){
 		case "IN":
-			this.tugger.moveIn(-0.5);
+			this.tugger.move(-0.5);
 			break;
 		case "OUT":
-			this.tugger.moveOut(0.5);
+			this.tugger.move(0.5);
 			break;
 		case "NEXTIN":
 		case "PREV":

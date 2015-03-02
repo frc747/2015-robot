@@ -19,38 +19,37 @@ public class Tugger implements Runnable{
 	private DigitalInput innerLimit, outterLimit;
 	private double[] positions;
 	private double direction;
+	private double speed;
 	
 	private boolean moveToDest = false;
-	private int positionNum = 0;
 	private boolean running = false;
+	private int positionNum = 0;
+	private int encoderMin = 0;
+	private int encoderMax = 0;
 	private Thread thread;
 	
 	//Creates object "Tugger"
 	
-	public Tugger(CANTalon motor, DigitalInput lowerLimit, DigitalInput upperLimit, double[] positions, double direction){
+	public Tugger(CANTalon motor, DigitalInput lowerLimit, DigitalInput upperLimit, double[] positions, double direction, int encMin, int encMax){
 		this.motor = motor;
 		this.innerLimit = lowerLimit;
 		this.outterLimit = upperLimit;
 		this.direction = direction;
 		
 		this.positions = positions;
+		
+		this.encoderMax = encMin;
+		this.encoderMax = encMax;
+		
+		this.speed = 0;
+		
 		this.thread = new Thread(this);
-		this.thread.start();
 	}
 	
 	//Moving out at a given speed
 	
-	public void moveOut(double speed){
-		if(!this.outterLimit.get())
-			this.motor.set(speed * this.direction);
-		this.moveToDest = false;
-	}
-	
-	//Moving in at a given speed
-	
-	public void moveIn(double speed){
-		if(!this.innerLimit.get())
-			this.motor.set(-speed * this.direction);
+	public void move(double speed){
+		this.speed = speed;
 		this.moveToDest = false;
 	}
 	
@@ -107,21 +106,51 @@ public class Tugger implements Runnable{
 		while(this.running){
 			if(this.moveToDest){
 				if(!this.innerLimit.get() && this.positions[positionNum] > this.motor.getPosition()){
-					this.motor.set(-0.5 * this.direction);
+					double reduction = 0;
+
+					if (this.motor.getPosition() - this.encoderMin > .9*(encoderMax - encoderMin) && speed > 0){
+						reduction = (this.motor.getPosition() - encoderMin) / (.1 * (encoderMax - encoderMin));
+					}else if((this.motor.getPosition() - this.positions[positionNum]) < .1 * (encoderMax - encoderMin)){
+						reduction = (this.motor.getPosition() - this.positions[positionNum]) / (.1 * (encoderMax - encoderMin));
+					}
+					reduction *= -.9;
+					this.motor.set(-0.5 * this.direction - reduction);
 				}else if(!this.outterLimit.get() && this.positions[positionNum] < this.motor.getPosition()){
-					this.motor.set(0.5 * this.direction);
+					double reduction = 0;
+
+					if(this.motor.getPosition() - this.encoderMin  < .1 *(encoderMax - encoderMin) && speed < 0){
+						reduction = (this.motor.getPosition() - encoderMin) / (.1 * (encoderMax - encoderMin));
+					}else if((this.positions[positionNum] - this.motor.getPosition()) < .1 * (encoderMax - encoderMin)){
+						reduction = (this.positions[positionNum] - this.motor.getPosition()) / (.1 * (encoderMax - encoderMin));
+					}
+					reduction *= .9;
+					this.motor.set(0.5 * this.direction - reduction);
 				}else{
 					this.moveToDest = false;
 				}
 			}else{
-				try {
-					Thread.sleep(1);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+				double reduction = 0;
+				if (this.motor.getPosition() -  this.encoderMin > .9*(encoderMax - encoderMin) && speed > 0){
+					reduction = (encoderMax - this.motor.getPosition()) / (.1 * (encoderMax - encoderMin));
+					reduction *= .9;
+				}else if(this.motor.getPosition() - this.encoderMin  < .1 *(encoderMax - encoderMin) && speed < 0){
+					reduction = (this.motor.getPosition() - encoderMin) / (.1 * (encoderMax - encoderMin));
+					reduction *= -.9;
+				}	
+				this.motor.set(this.speed - reduction);
 			}
 			
 		}
+	}
+	
+	public void on(){
+		this.running = true;
+		this.motor.enableControl();
+	}
+
+	public void off() {
+		this.running = false;
+		this.motor.disable();
 	}
 
 }
