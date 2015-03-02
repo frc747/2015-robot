@@ -6,18 +6,13 @@ package com.frc869.robot.code2015;
 
 import com.frc869.robot.code2015.drive.Mecanum869;
 import com.frc869.robot.code2015.endefector.CleanLift;
-import com.frc869.robot.code2015.endefector.Lift;
-import com.frc869.robot.code2015.endefector.Lift2;
-import com.frc869.robot.code2015.endefector.LiftListener;
 import com.frc869.robot.code2015.endefector.Tugger;
-import com.frc869.robot.code2015.endefector.TuggerListener;
-import com.frc869.robot.code2015.operator.Operator;
+
 
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.Gyro;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Joystick.RumbleType;
@@ -44,9 +39,8 @@ public class Robot extends SampleRobot {
 	private CANTalon talonLift1, talonLift2;
 	private Mecanum869 drive;
 	//private Joystick stick;
-	private Joystick cont, oper;
+	private Joystick driverController, operatorController;
 	private Gyro gyro;
-	private Operator operator;
 	private Encoder encoder;
 
 	private DigitalInput tLeftIn, tLeftOut, tRightIn, tRightOut, liftUp, liftDown;
@@ -75,8 +69,8 @@ public class Robot extends SampleRobot {
 
 		// joystick
 	//	this.stick = new Joystick(0);
-		this.cont = new Joystick(1);
-		this.oper = new Joystick(2);
+		this.driverController = new Joystick(1);
+		this.operatorController = new Joystick(2);
 
 		// gyro
 		this.gyro = new Gyro(0);
@@ -102,7 +96,13 @@ public class Robot extends SampleRobot {
 		this.lift = new CleanLift(talonLift1, talonLift2, encoder, liftDown, liftUp, liftPos, LiftMax, LiftMax);
 	}
 
-	// Autonomous period
+	
+	
+	//*********************************************************************
+	//***** Autonomous code begins                                  *******
+	//*****															*******
+	//*****															*******
+	//*********************************************************************	
 
 	public void autonomous() {
 		this.rightFront.setPosition(0);
@@ -125,7 +125,12 @@ public class Robot extends SampleRobot {
 		this.drive.disable();
 		
 	}
+	//*********************************************************************
+	//***** Autonomous code endsn                                   *******
+	//*********************************************************************	
 
+	
+	
 	// Code which speaks to operator control
 
 	public void operatorControl() {
@@ -133,87 +138,73 @@ public class Robot extends SampleRobot {
 		this.gyro.reset();
 		while (isOperatorControl() && isEnabled()) {
 
-			/*
-			 * The following lines up to line 129 are the lines of code for the
-			 * two different controllers. //The first one is for the joystick
-			 * controller The second one is for the gamepad controller
-			 */
-			// Standard Joystick
-			/*
-			 * double y = this.stick.getY(); double x = this.stick.getX();
-			 * double z = this.stick.getZ();
-			 */
-
-			// Gamepad
-			//double x = this.cont.getRawAxis(4);
-			//double y = this.cont.getY();
-			//double z = this.cont.getRawAxis(3) - this.cont.getRawAxis(2);
+		
+			//Get variables from Driver Controller joysticks. Will be used to set speed for mecanum drive.
+			double x = this.driverController.getX();
+			double y = this.driverController.getY();
+			double z = this.driverController.getZ();
 			
-			double x = this.cont.getX();
-			double y = this.cont.getY();
-			double z = this.cont.getZ();
-			
-			if(this.cont.getRawButton(6)){
-				if(Math.abs(x) > Math.abs(y)){
-					y = 0;
-				}else if(Math.abs(x) < Math.abs(y)){
-					x = 0;
-				}
-			}
-
-			double gyroAng = this.gyro.getAngle();
-
-			if (Math.abs(x) < 0.1) {
-				x = 0;
-			}
-
-			else {
-				x -= 0.1 * x / Math.abs(x);
-				x /= .9;
-				// x *= x * x / Math.abs(x);
-			}
-
-			if (Math.abs(y) < 0.1) {
-				y = 0;
-			}
-
-			else {
-				y -= 0.1 * y / Math.abs(y);
-				y /= .9;
-				// y *= y * y / Math.abs(y);
-			}
-
-			if (Math.abs(z) < 0.1) {
-				z = 0;
-			}
-
-			else {
-				z -= 0.1 * z / Math.abs(z);
-				z /= .9;
-				// z *= z * z / Math.abs(z);
-			}
+//			if(this.driverController.getRawButton(6)){
+//				if(Math.abs(x) > Math.abs(y)){
+//					y = 0;
+//				}else if(Math.abs(x) < Math.abs(y)){
+//					x = 0;
+//				}
+//			}
+//
+//			double gyroAng = this.gyro.getAngle();
+//
+//			if (Math.abs(x) < 0.1) {
+//				x = 0;
+//			}
+//
+//			else {
+//				x -= 0.1 * x / Math.abs(x);
+//				x /= .9;
+//				// x *= x * x / Math.abs(x);
+//			}
+//
+//			if (Math.abs(y) < 0.1) {
+//				y = 0;
+//			}
+//
+//			else {
+//				y -= 0.1 * y / Math.abs(y);
+//				y /= .9;
+//				// y *= y * y / Math.abs(y);
+//			}
+//
+//			if (Math.abs(z) < 0.1) {
+//				z = 0;
+//			}
+//
+//			else {
+//				z -= 0.1 * z / Math.abs(z);
+//				z /= .9;
+//				// z *= z * z / Math.abs(z);
+//			}
 			
 			//reduce controller input by X% for drive
 			this.drive.drive((x*.65), (y*.65), (z*.65), 0);
 			
-			if(this.oper.getRawButton(1)){
+			if(this.operatorController.getRawButton(1)){
 				System.out.println(this.encoder.get());
-			}else if(this.oper.getRawButton(3)){
+			}else if(this.operatorController.getRawButton(3)){
 				this.encoder.reset();
 				System.out.println("Clear!");
 			}
 			
-			if(this.oper.getRawButton(6)) {
+			if(this.operatorController.getRawButton(6)) {
 				this.lift.setPosition(CleanLift.Position.TOTE1);
-			} else if(this.oper.getRawButton(7)) {
+			} else if(this.operatorController.getRawButton(7)) {
 				this.lift.setPosition(CleanLift.Position.TOTE2);
-			} else if(this.oper.getRawButton(8)) {
+			} else if(this.operatorController.getRawButton(8)) {
 				this.lift.setPosition(CleanLift.Position.TOTE3);
-			} else if(this.oper.getRawButton(9)) {
+			} else if(this.operatorController.getRawButton(9)) {
 				this.lift.setPosition(CleanLift.Position.TOTE4);
-			} else if (this.oper.getRawButton(4)){
+			} else if (this.operatorController.getRawButton(4)){
 				this.lift.move(.25);
-			} else if (this.oper.getRawButton(1)){
+			} else if (this.operatorController.getRawButton(1)){
 				this.lift.move(-.25);
 			} else {
 				this.lift.move(0);
@@ -224,16 +215,16 @@ public class Robot extends SampleRobot {
 	}
 	
 	public void test(){
-		while(this.isEnabled()){
-			System.out.println(this.cont.getRawAxis(3) - this.cont.getRawAxis(2));
-			
-			try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+//		while(this.isEnabled()){
+//			System.out.println(this.driverController.getRawAxis(3) - this.driverController.getRawAxis(2));
+//			
+//			try {
+//				Thread.sleep(10);
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
 	}
 
 }
