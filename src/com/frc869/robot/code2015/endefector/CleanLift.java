@@ -95,24 +95,9 @@ public class CleanLift implements Runnable {
 			move(0);
 		}
 	}
-//	
-//	//Moves Lift up to next set position
-//	
-//	public void nextUp(){
-//		if(this.positionNum < this.positions.length - 1){
-//			this.positionNum++;
-//			this.moveToDest = true;
-//		}
-//	}
-//	
-//	//Moves Lift down to next set position
-//	
-//	public void nextDown(){
-//		if(this.positionNum > 0){
-//			this.positionNum--;
-//			this.moveToDest = true;
-//		}
-//	}
+
+	
+	
 	
 	//Calibrate upper position
 	
@@ -143,72 +128,9 @@ public class CleanLift implements Runnable {
 		//TODO reset encoder
 	}
 
-	//Automated moving control to preset conditions
-//	public void _run() {
-//		while(this.running){
-//			if(this.moveToDest){
-//				if(!this.lowerLimit.get() && this.positions[positionNum] > this.encoder.get()){
-//					this.talonLift1.set(-0.5);
-//					this.talonLift2.set(-0.5);
-//				}else if(!this.upperLimit.get() && this.positions[positionNum] < this.encoder.get()){
-//					this.talonLift1.set(0.5);
-//					this.talonLift2.set(0.5);
-//				}else{
-//					this.moveToDest = false;
-//				}
-//			}else{
-//				try {
-//					Thread.sleep(1);
-//				} catch (InterruptedException e) {
-//					e.printStackTrace();
-//				}
-//			}
-//			
-//		}
-//	
-//	}
 	
 	@Override
 	public void run() {
-//		while(this.running){
-//			if(this.moveToDest){
-//				if(!this.lowerLimit.get() && this.positions[positionNum] > this.encoder.get()){
-//					double reduction = 0;
-//
-//					if (this.encoder.get() - this.encoderMin > .9*(encoderMax - encoderMin) && speed > 0){
-//						reduction = (this.encoder.get() - encoderMin) / (.1 * (encoderMax - encoderMin));
-//					}else if((this.encoder.get() - this.positions[positionNum]) < .1 * (encoderMax - encoderMin)){
-//						reduction = (this.encoder.get() - this.positions[positionNum]) / (.1 * (encoderMax - encoderMin));
-//					}
-//					reduction *= -.9;
-//					this.talonLift1.set(-1 + reduction);
-//					this.talonLift2.set(-1 + reduction);
-//				}else if(!this.upperLimit.get() && this.positions[positionNum] < this.encoder.get()){
-//					double reduction = 0;
-//
-//					if(this.encoder.get() - this.encoderMin  < .1 *(encoderMax - encoderMin) && speed < 0){
-//						reduction = (this.encoder.get() - encoderMin) / (.1 * (encoderMax - encoderMin));
-//					}else if((this.positions[positionNum] - this.encoder.get()) < .1 * (encoderMax - encoderMin)){
-//						reduction = (this.positions[positionNum] - this.encoder.get()) / (.1 * (encoderMax - encoderMin));
-//					}
-//					reduction *= .9;
-//					this.talonLift1.set(1 - reduction);
-//					this.talonLift2.set(0.5 - reduction);
-//				}else{
-//					this.moveToDest = false;
-//				}
-//			}else{
-//				double reduction = 0;
-//				if (this.encoder.get() -  this.encoderMin > .9*(encoderMax - encoderMin) && speed > 0){
-//					reduction = (encoderMax - this.encoder.get()) / (.1 * (encoderMax - encoderMin));
-//					reduction *= .9;
-//				}else if(this.encoder.get() - this.encoderMin  < .1 *(encoderMax - encoderMin) && speed < 0){
-//					reduction = (this.encoder.get() - encoderMin) / (.1 * (encoderMax - encoderMin));
-//					reduction *= -.9;
-//				}	
-//				this.talonLift1.set(this.speed - reduction);
-//			}
-//			
-//		}
+
 	}
 }
