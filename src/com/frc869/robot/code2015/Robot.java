@@ -119,6 +119,11 @@ public class Robot extends SampleRobot {
 		}
 		System.out.println("Done!");
 		this.mecanumDrive.drive(0, 0, 0, 0);
+		this.leftBack.set(0);
+		this.leftFront.set(0);
+		this.rightBack.set(0);
+		this.rightFront.set(0);
+		
 		this.mecanumDrive.disable();
 		
 	}

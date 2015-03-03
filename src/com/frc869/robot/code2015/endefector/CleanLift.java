@@ -118,11 +118,24 @@ public class CleanLift implements Runnable {
 	
 	public void calibrateDown(){
 		this.moveToDest = false;
+		//distance past lower limit for lower home position
+		double homePosition = 150;
+		
+		
 		while(this.lowerLimit.get()){
-			this.talonLift1.set(-1);
-			this.talonLift2.set(-1);
+			this.talonLift1.set(-.35);
+			this.talonLift2.set(-.35);
 		}
 		
+		//move X distance past lower limit for actual "0" (home position)
+		if(homePosition - this.encoder.get() > 0){
+			this.talonLift1.set(-.2);
+			this.talonLift2.set(-.2);
+		}else{
+			this.talonLift1.set(0);
+			this.talonLift2.set(0);
+		}
+		this.encoder.reset();
 		this.positionNum = 0;
 		
 		//TODO reset encoder
