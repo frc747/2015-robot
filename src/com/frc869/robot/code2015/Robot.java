@@ -196,9 +196,9 @@ public class Robot extends SampleRobot {
 			if(this.operatorController.getRawButton(10)) {
 				this.lift.calibrateDown(liftLimDown, liftEncoder);
 			} else if (this.operatorController.getRawButton(4)){
-				if (this.liftEncoder.get() < 28000){
-					this.lift.move(.50);
-				} else if (this.liftEncoder.get() > 28000 && this.liftEncoder.get() < 29250){
+				if (this.liftEncoder.get() < 27250){
+					this.lift.move(.70);
+				} else if (this.liftEncoder.get() < 28500 && this.liftEncoder.get() > 27250){
 					this.lift.move(.25);
 				} else if (this.liftEncoder.get() < 29250){
 					this.lift.move(.1);
@@ -207,7 +207,7 @@ public class Robot extends SampleRobot {
 				}
 			} else if (this.operatorController.getRawButton(1)){
 				if (this.liftEncoder.get() > 2000){
-					this.lift.move(-.50);
+					this.lift.move(-.70);
 				} else if (this.liftEncoder.get() < 2000 && this.liftEncoder.get() > 750){
 					this.lift.move(-.25);
 				} else if (this.liftEncoder.get() > 0){
