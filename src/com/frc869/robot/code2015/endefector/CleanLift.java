@@ -38,6 +38,8 @@ public class CleanLift implements Runnable {
 	private double posi2 = 1000;
 	private double posi3 = 1000;
 	private double posi4 = 1000;
+	public boolean liftIsHome;
+	
 	
 	
 	
@@ -134,18 +136,18 @@ public class CleanLift implements Runnable {
 	
 	//Calibrate upper position
 	
-	public void calibrateUp(){
-		this.moveToDest = false;
-		while(this.upperLimit.get()){
-			this.talonLift1.set(1);
-			this.talonLift2.set(1);
-		}
-		
-//		this.positionNum = this.positions.length - 1;
-		
-		//TODO reset encoder
-		
-	}
+//	public void calibrateUp(){
+//		this.moveToDest = false;
+//		while(this.upperLimit.get()){
+//			this.talonLift1.set(1);
+//			this.talonLift2.set(1);
+//		}
+//		
+////		this.positionNum = this.positions.length - 1;
+//		
+//		//TODO reset encoder
+//		
+//	}
 	
 	//Calibrate lower position
 	
@@ -172,21 +174,42 @@ public class CleanLift implements Runnable {
 //		this.positionNum = 0;
 		this.liftEncoder = liftEncoder;
 		
-		if (this.liftEncoder.get() > 0 || this.liftEncoder.get() < (-100)){
-			this.liftEncoder.reset();
-			this.talonLift1.set(0);
-			this.talonLift2.set(0);	
-		}else if (this.liftEncoder.get() <= 0 && this.liftEncoder.get() > (-100)){
-			this.talonLift1.set(-.25);
-			this.talonLift2.set(-.25);
-		} else if (this.liftEncoder.get() == (-100)){
-			this.talonLift1.set(0);
-			this.talonLift2.set(0);
-			this.liftEncoder.reset();
-		} else {
-			this.talonLift1.set(0);
-			this.talonLift2.set(0);
+		
+		
+		
+		if (this.lowerLimit.get()){
+			this.talonLift1.set(-.15);
+			this.talonLift2.set(-.15);
+			System.out.println("LIMIT");
+			System.out.println(this.liftEncoder.get());
+			liftIsHome = false;
+		}else{
+			
+			if (this.liftEncoder.get() <= (-100) && this.liftEncoder.get() >= (-110)){
+				this.talonLift1.set(0);
+				this.talonLift2.set(0);
+				System.out.println(this.liftEncoder.get());
+				System.out.println("third");
+				this.liftEncoder.reset();
+				liftIsHome = true;
+			} else if (this.liftEncoder.get() <= 0 && this.liftEncoder.get() > (-100) && !liftIsHome){
+				this.talonLift1.set(-.15);
+				this.talonLift2.set(-.15);
+				System.out.println(this.liftEncoder.get());
+				System.out.println("second");
+			} else if (this.liftEncoder.get() > 0 || this.liftEncoder.get() < (-110) && !liftIsHome){
+				this.liftEncoder.reset();
+				this.talonLift1.set(0);
+				this.talonLift2.set(0);	
+				System.out.println(this.liftEncoder.get());
+				System.out.println("first"); 
+			}
+
 		}
+		
+			
+				
+				
 		
 		
 		//TO DO reset encoder
