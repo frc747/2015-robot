@@ -35,9 +35,9 @@ public class CleanLift implements Runnable {
 //	private int positionNum = 0;
 	private int encoderMin, encoderMax;
 	private double posi1 = 1000;
-	private double posi2 = 1000;
-	private double posi3 = 1000;
-	private double posi4 = 1000;
+	private double posi2 = 2000;
+	private double posi3 = 3000;
+	private double posi4 = 4000;
 	public boolean liftIsHome;
 	
 	
@@ -110,19 +110,19 @@ public class CleanLift implements Runnable {
 	
 		if (position > currentLocation){
 			if (position - currentLocation < 100){
-				this.talonLift1.set(.25);
-				this.talonLift2.set(.25);
+				this.talonLift1.set(.2);
+				this.talonLift2.set(.2);
 			} else {
-				this.talonLift1.set(1);
-				this.talonLift2.set(1);
+				this.talonLift1.set(.5);
+				this.talonLift2.set(.5);
 			}
 		} else if (position < currentLocation){
 			if (currentLocation - position < 100){
-				this.talonLift1.set(-.25);
-				this.talonLift2.set(-.25);
+				this.talonLift1.set(-.2);
+				this.talonLift2.set(-.2);
 			} else {
-				this.talonLift1.set(-1);
-				this.talonLift2.set(-1);
+				this.talonLift1.set(-.5);
+				this.talonLift2.set(-.5);
 			}
 		} else {
 			this.talonLift1.set(0);
@@ -178,8 +178,8 @@ public class CleanLift implements Runnable {
 		
 		
 		if (this.lowerLimit.get()){
-			this.talonLift1.set(-.15);
-			this.talonLift2.set(-.15);
+			this.talonLift1.set(-.1);
+			this.talonLift2.set(-.1);
 			System.out.println("LIMIT");
 			System.out.println(this.liftEncoder.get());
 			liftIsHome = false;
@@ -193,8 +193,8 @@ public class CleanLift implements Runnable {
 				this.liftEncoder.reset();
 				liftIsHome = true;
 			} else if (this.liftEncoder.get() <= 0 && this.liftEncoder.get() > (-100) && !liftIsHome){
-				this.talonLift1.set(-.15);
-				this.talonLift2.set(-.15);
+				this.talonLift1.set(-.1);
+				this.talonLift2.set(-.1);
 				System.out.println(this.liftEncoder.get());
 				System.out.println("second");
 			} else if (this.liftEncoder.get() > 0 || this.liftEncoder.get() < (-110) && !liftIsHome){
