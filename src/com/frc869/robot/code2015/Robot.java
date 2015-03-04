@@ -75,6 +75,7 @@ public class Robot extends SampleRobot {
 		this.gyro = new Gyro(0);
 
 		this.liftEncoder = new Encoder(0, 1, false, EncodingType.k1X); // Encoder for lift
+		this.liftEncoder.reset();
 		System.out.println("ES: " + this.liftEncoder.getEncodingScale());
 
 		// digital inputs for the limit switches
@@ -86,12 +87,13 @@ public class Robot extends SampleRobot {
 		this.tugRightLimIn = new DigitalInput(7);
 		
 		
-		double[] liftPos = { 1, 100 }; // orders positions for the lift
-		
+			
 		CANTalon[] liftTalons = {talonLift1, talonLift2};
 
-		this.lift = new CleanLift(talonLift1, talonLift2, liftEncoder, liftLimDown, liftLimUp, liftPos, LiftMax, LiftMax);
+		this.lift = new CleanLift(talonLift1, talonLift2, liftEncoder, liftLimDown, liftLimUp, LiftMax, LiftMax);
+		
 	}
+	
 
 	
 	
@@ -146,6 +148,12 @@ public class Robot extends SampleRobot {
 			double y = this.driverController.getY();
 			double z = this.driverController.getZ();
 			
+			double lift1Position = 1000;
+			double lift2Position = 2000;
+			double lift3Position = 3000;
+			double lift4Position = 4000;
+			
+		
 //			
 			
 			//reduce controller input by X% for drive
@@ -158,31 +166,40 @@ public class Robot extends SampleRobot {
 				System.out.println("Clear!");
 			}
 			
+					
+			if(this.operatorController.getRawButton(10)){
+
+				System.out.println(this.liftEncoder.get());
+				
+			}
 			
-			//Commenting positional code out temporarily until encoder function is understood
-//			if(this.operatorController.getRawButton(6)) {
-//				this.lift.setPosition(CleanLift.Position.TOTE1);
-//			} else if(this.operatorController.getRawButton(7)) {
-//				this.lift.setPosition(CleanLift.Position.TOTE2);
-//			} else if(this.operatorController.getRawButton(8)) {
-//				this.lift.setPosition(CleanLift.Position.TOTE3);
-//			} else if(this.operatorController.getRawButton(9)) {
-//				this.lift.setPosition(CleanLift.Position.TOTE4);
-//			} else if (this.operatorController.getRawButton(4)){
-//				this.lift.move(.25);
-//			} else if (this.operatorController.getRawButton(1)){
-//				this.lift.move(-.25);
-//			} else {
-//				this.lift.move(0);
-//			}
 			
-			if (this.operatorController.getRawButton(4)){
+			if(this.operatorController.getRawButton(10)) {
+				this.lift.calibrateDown(liftLimDown, liftEncoder);
+			} else if(this.operatorController.getRawButton(6)) {
+				this.lift.setPosition(lift1Position, liftEncoder);
+			} else if(this.operatorController.getRawButton(7)) {
+				this.lift.setPosition(lift2Position, liftEncoder);
+			} else if(this.operatorController.getRawButton(8)) {
+				this.lift.setPosition(lift3Position, liftEncoder);
+			} else if(this.operatorController.getRawButton(9)) {
+				this.lift.setPosition(lift4Position, liftEncoder);
+			} else if (this.operatorController.getRawButton(4)){
 				this.lift.move(.25);
 			} else if (this.operatorController.getRawButton(1)){
 				this.lift.move(-.25);
 			} else {
 				this.lift.move(0);
 			}
+			
+//			Commenting non positional code unless needed
+//			if (this.operatorController.getRawButton(4)){
+//				this.lift.move(.25);
+//			} else if (this.operatorController.getRawButton(1)){
+//				this.lift.move(-.25);
+//			} else {
+//				this.lift.move(0);
+//			}
 			
 		}
 		this.mecanumDrive.disable();
