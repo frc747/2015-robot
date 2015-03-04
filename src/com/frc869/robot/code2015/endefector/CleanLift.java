@@ -60,23 +60,23 @@ public class CleanLift implements Runnable {
 	
 	public void move(double speed){
 		if(speed>0){
-			if(this.upperLimit.get()) {
+//			if(this.liftEncoder.get() < 29250) {
 				this.talonLift1.set(speed);
 				this.talonLift2.set(speed);
-			} else {
-				//encoderMax = encoder.get();
-				this.talonLift1.set(0);
-				this.talonLift2.set(0);
-			}
+//			} else {
+//				//encoderMax = encoder.get();
+//				this.talonLift1.set(0);
+//				this.talonLift2.set(0);
+//			}
 		} else if(speed < 0) {
-			if(this.lowerLimit.get()) {
+//			if(this.liftEncoder.get() > 0) {
 				this.talonLift1.set(speed);
 				this.talonLift2.set(speed);
-			} else {
-				//encoderMin = encoder.get();
-				this.talonLift1.set(0);
-				this.talonLift2.set(0);
-			}
+//			} else {
+//				//encoderMin = encoder.get();
+//				this.talonLift1.set(0);
+//				this.talonLift2.set(0);
+//			}
 		} else {
 			this.talonLift1.set(0);
 			this.talonLift2.set(0);

@@ -196,11 +196,11 @@ public class Robot extends SampleRobot {
 			if(this.operatorController.getRawButton(10)) {
 				this.lift.calibrateDown(liftLimDown, liftEncoder);
 			} else if (this.operatorController.getRawButton(4)){
-				if (this.liftEncoder.get() < 33000){
+				if (this.liftEncoder.get() < 28000){
 					this.lift.move(.50);
-				} else if (this.liftEncoder.get() > 33000 && this.liftEncoder.get() < 34250){
+				} else if (this.liftEncoder.get() > 28000 && this.liftEncoder.get() < 29250){
 					this.lift.move(.25);
-				} else if (this.liftEncoder.get() < 35000){
+				} else if (this.liftEncoder.get() < 29250){
 					this.lift.move(.1);
 				} else {
 					this.lift.move(0);
