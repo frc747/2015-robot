@@ -92,6 +92,7 @@ public class Robot extends SampleRobot {
 		CANTalon[] liftTalons = {talonLift1, talonLift2};
 
 		this.lift = new CleanLift(talonLift1, talonLift2, liftEncoder, liftLimDown, liftLimUp, LiftMax, LiftMax);
+		this.tugger = new Tugger();
 		
 	}
 	
@@ -218,6 +219,39 @@ public class Robot extends SampleRobot {
 			} else {
 				this.lift.move(0);
 			}
+			
+			
+			
+			//TUGGER MOVING CODE
+			
+			if(this.operatorController.getRawButton(11)) {
+				this.Tugger.calibrate(tugLeftLimIn, tugRightLimIn, tuggerLeftEncoder, tuggerRightEncoder);
+				
+			} else if (this.operatorController.getRawButton(4)){
+				if (this.liftEncoder.get() < 27250){
+					this.lift.move(.70);
+				} else if (this.liftEncoder.get() < 28500 && this.liftEncoder.get() > 27250){
+					this.lift.move(.25);
+				} else if (this.liftEncoder.get() < 29250){
+					this.lift.move(.1);
+				} else {
+					this.lift.move(0);
+				}
+			} else if (this.operatorController.getRawButton(1)){
+				if (this.liftEncoder.get() > 2000){
+					this.lift.move(-.70);
+				} else if (this.liftEncoder.get() < 2000 && this.liftEncoder.get() > 750){
+					this.lift.move(-.25);
+				} else if (this.liftEncoder.get() > 0){
+					this.lift.move(-.1);
+				} else {
+					this.lift.move(0);
+				}
+			} else {
+				this.lift.move(0);
+			}
+			
+			
 			
 		}
 		this.mecanumDrive.disable();
