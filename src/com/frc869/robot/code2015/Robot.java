@@ -44,8 +44,8 @@ public class Robot extends SampleRobot {
 	private Joystick driverController, operatorController;
 	private Gyro gyro;
 	private Encoder liftEncoder, tuggerLeftEncoder, tuggerRightEncoder;
-	private DigitalInput tugLeftLimIn, tugLeftLimOut, tugRightLimIn, tugRightLimOut, liftLimUp, liftLimDown;
-	private Tugger tuggerLeft, tuggerRight;
+	private DigitalInput tugLeftLim, tugRightLim, liftLimUp, liftLimDown;
+	private Tugger tuggers;
 	private CleanLift lift;
 
 	
@@ -82,17 +82,15 @@ public class Robot extends SampleRobot {
 		// digital inputs for the limit switches
 		this.liftLimUp = new DigitalInput(3);
 		this.liftLimDown = new DigitalInput(2);
-		this.tugLeftLimOut = new DigitalInput(4);
-		this.tugRightLimOut = new DigitalInput(5);
-		this.tugLeftLimIn = new DigitalInput(6);
-		this.tugRightLimIn = new DigitalInput(7);
+		this.tugLeftLim = new DigitalInput(4);
+		this.tugRightLim = new DigitalInput(5);
 		
 		
 			
 		CANTalon[] liftTalons = {talonLift1, talonLift2};
 
 		this.lift = new CleanLift(talonLift1, talonLift2, liftEncoder, liftLimDown, liftLimUp, LiftMax, LiftMax);
-		this.tugger = new Tugger();
+		this.tuggers = new Tugger(talonLeftTugger, talonRightTugger, tugLeftLim, tugRightLim);
 		
 	}
 	
@@ -161,13 +159,16 @@ public class Robot extends SampleRobot {
 			//reduce controller input by X% for drive
 			this.mecanumDrive.drive((x*.65), (y*.65), (z*.65), 0);
 			
-			if(this.operatorController.getRawButton(1)){
-				System.out.println(this.liftEncoder.get());
-			}else if(this.operatorController.getRawButton(3)){
-				this.liftEncoder.reset();
-				System.out.println("Clear!");
-			}
+//			if(this.operatorController.getRawButton(1)){
+//				System.out.println(this.liftEncoder.get());
+//			}else if(this.operatorController.getRawButton(3)){
+//				this.liftEncoder.reset();
+//				System.out.println("Clear!");
+//			}
+
+		
 			
+		
 			
 			
 //			if(this.operatorController.getRawButton(10)) {
@@ -194,7 +195,7 @@ public class Robot extends SampleRobot {
 			
 			
 //			Commenting non positional code unless needed
-			if(this.operatorController.getRawButton(10)) {
+			if(this.operatorController.getRawButton(12)) {
 				this.lift.calibrateDown(liftLimDown, liftEncoder);
 			} else if (this.operatorController.getRawButton(4)){
 				if (this.liftEncoder.get() < 27250){
@@ -206,7 +207,7 @@ public class Robot extends SampleRobot {
 				} else {
 					this.lift.move(0);
 				}
-			} else if (this.operatorController.getRawButton(1)){
+			} else if (this.operatorController.getRawButton(2)){
 				if (this.liftEncoder.get() > 2000){
 					this.lift.move(-.70);
 				} else if (this.liftEncoder.get() < 2000 && this.liftEncoder.get() > 750){
@@ -225,30 +226,36 @@ public class Robot extends SampleRobot {
 			//TUGGER MOVING CODE
 			
 			if(this.operatorController.getRawButton(11)) {
-				this.Tugger.calibrate(tugLeftLimIn, tugRightLimIn, tuggerLeftEncoder, tuggerRightEncoder);
+				this.tuggers.calibrate(tugLeftLim, tugRightLim);
 				
-			} else if (this.operatorController.getRawButton(4)){
-				if (this.liftEncoder.get() < 27250){
-					this.lift.move(.70);
-				} else if (this.liftEncoder.get() < 28500 && this.liftEncoder.get() > 27250){
-					this.lift.move(.25);
-				} else if (this.liftEncoder.get() < 29250){
-					this.lift.move(.1);
-				} else {
-					this.lift.move(0);
-				}
 			} else if (this.operatorController.getRawButton(1)){
-				if (this.liftEncoder.get() > 2000){
-					this.lift.move(-.70);
-				} else if (this.liftEncoder.get() < 2000 && this.liftEncoder.get() > 750){
-					this.lift.move(-.25);
-				} else if (this.liftEncoder.get() > 0){
-					this.lift.move(-.1);
-				} else {
-					this.lift.move(0);
-				}
-			} else {
-				this.lift.move(0);
+
+				this.tuggers.move(.25);
+				
+				
+//				if (this.tuggerLeftEncoder.get() < 27250){
+//					this.tuggers.move(.70);
+//				} else if (this.tuggerLeftEncoder.get() < 28500 && this.tuggerLeftEncoder.get() > 27250){
+//					this.tuggers.move(.25);
+//				} else if (this.tuggerLeftEncoder.get() < 29250){
+//					this.tuggers.move(.1);
+//				} else {
+//					this.tuggers.move(0);
+//				}
+			} else if (this.operatorController.getRawButton(3)){
+				
+				this.tuggers.move(-.25);
+				
+				
+//				if (this.tuggerLeftEncoder.get() > 2000){
+//					this.tuggers.move(-.70);
+//				} else if (this.tuggerLeftEncoder.get() < 2000 && this.tuggerLeftEncoder.get() > 750){
+//					this.tuggers.move(-.25);
+//				} else if (this.tuggerLeftEncoder.get() > 0){
+//					this.tuggers.move(-.1);
+//				} else {
+//					this.tuggers.move(0);
+//				}
 			}
 			
 			
