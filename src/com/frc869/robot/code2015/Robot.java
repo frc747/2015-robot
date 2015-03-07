@@ -8,6 +8,7 @@ import com.frc869.robot.code2015.endefector.CleanLift;
 import com.frc869.robot.code2015.endefector.Tugger;
 
 
+
 //IMPORT FRC CLASSES FOR USE
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
@@ -167,9 +168,7 @@ public class Robot extends SampleRobot {
 //			}
 
 		
-			
-		
-			
+					
 			
 //			if(this.operatorController.getRawButton(10)) {
 //				this.lift.calibrateDown(liftLimDown, liftEncoder);
@@ -194,23 +193,23 @@ public class Robot extends SampleRobot {
 			}
 			
 			
-//			Commenting non positional code unless needed
-			if(this.operatorController.getRawButton(12)) {
+			//COMPETITION ROBOT VALUES
+			if(this.operatorController.getRawButton(10)) {
 				this.lift.calibrateDown(liftLimDown, liftEncoder);
 			} else if (this.operatorController.getRawButton(4)){
-				if (this.liftEncoder.get() < 27250){
+				if (this.liftEncoder.get() < 28500){
 					this.lift.move(.70);
-				} else if (this.liftEncoder.get() < 28500 && this.liftEncoder.get() > 27250){
+				} else if (this.liftEncoder.get() < 28750 && this.liftEncoder.get() > 28500){
 					this.lift.move(.25);
-				} else if (this.liftEncoder.get() < 29250){
+				} else if (this.liftEncoder.get() < 29000){
 					this.lift.move(.1);
 				} else {
 					this.lift.move(0);
 				}
 			} else if (this.operatorController.getRawButton(2)){
-				if (this.liftEncoder.get() > 2000){
+				if (this.liftEncoder.get() > 500){
 					this.lift.move(-.70);
-				} else if (this.liftEncoder.get() < 2000 && this.liftEncoder.get() > 750){
+				} else if (this.liftEncoder.get() < 500 && this.liftEncoder.get() > 250){
 					this.lift.move(-.25);
 				} else if (this.liftEncoder.get() > 0){
 					this.lift.move(-.1);
@@ -223,14 +222,50 @@ public class Robot extends SampleRobot {
 			
 			
 			
+			
+//			PRACTICE ROBOT VALUES
+//			if(this.operatorController.getRawButton(12)) {
+//				this.lift.calibrateDown(liftLimDown, liftEncoder);
+//			} else if (this.operatorController.getRawButton(4)){
+//				if (this.liftEncoder.get() < 27250){
+//					this.lift.move(.70);
+//				} else if (this.liftEncoder.get() < 28500 && this.liftEncoder.get() > 27250){
+//					this.lift.move(.25);
+//				} else if (this.liftEncoder.get() < 29250){
+//					this.lift.move(.1);
+//				} else {
+//					this.lift.move(0);
+//				}
+//			} else if (this.operatorController.getRawButton(2)){
+//				if (this.liftEncoder.get() > 2000){
+//					this.lift.move(-.70);
+//				} else if (this.liftEncoder.get() < 2000 && this.liftEncoder.get() > 750){
+//					this.lift.move(-.25);
+//				} else if (this.liftEncoder.get() > 0){
+//					this.lift.move(-.1);
+//				} else {
+//					this.lift.move(0);
+//				}
+//			} else {
+//				this.lift.move(0);
+//			}
+			
+			if (this.operatorController.getRawButton(6)){
+				System.out.println(this.talonLeftTugger.getPosition());
+				System.out.println(this.talonRightTugger.getPosition());
+			} else if (this.operatorController.getRawButton(8)){
+				this.talonLeftTugger.setPosition(0);
+				this.talonRightTugger.setPosition(0);
+			}
+			
 			//TUGGER MOVING CODE
 			
 			if(this.operatorController.getRawButton(11)) {
 				this.tuggers.calibrate(tugLeftLim, tugRightLim);
 				
 			} else if (this.operatorController.getRawButton(1)){
-
-				this.tuggers.move(.25);
+					//tuggers in
+				this.tuggers.move(.5);
 				
 				
 //				if (this.tuggerLeftEncoder.get() < 27250){
@@ -244,7 +279,8 @@ public class Robot extends SampleRobot {
 //				}
 			} else if (this.operatorController.getRawButton(3)){
 				
-				this.tuggers.move(-.25);
+				//tuggers out
+				this.tuggers.move(-.5);
 				
 				
 //				if (this.tuggerLeftEncoder.get() > 2000){
@@ -253,11 +289,10 @@ public class Robot extends SampleRobot {
 //					this.tuggers.move(-.25);
 //				} else if (this.tuggerLeftEncoder.get() > 0){
 //					this.tuggers.move(-.1);
-//				} else {
-//					this.tuggers.move(0);
-//				}
+				
+			} else {
+				this.tuggers.move(0);
 			}
-			
 			
 			
 		}

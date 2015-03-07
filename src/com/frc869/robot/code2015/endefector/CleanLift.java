@@ -165,6 +165,17 @@ public class CleanLift implements Runnable {
 		
 		
 		
+//		if (this.lowerLimit.get()){
+//			this.talonLift1.set(-.1);
+//			this.talonLift2.set(-.1);
+//			System.out.println("LIMIT");
+//			System.out.println(this.liftEncoder.get());
+//			liftIsHome = false;
+//		}else{
+//			this.talonLift1.set(0);
+//			this.talonLift2.set(0);
+//		}
+		
 		if (this.lowerLimit.get()){
 			this.talonLift1.set(-.1);
 			this.talonLift2.set(-.1);
@@ -173,19 +184,19 @@ public class CleanLift implements Runnable {
 			liftIsHome = false;
 		}else{
 			
-			if (this.liftEncoder.get() <= (-100) && this.liftEncoder.get() >= (-110)){
+			if (this.liftEncoder.get() <= (-125) && this.liftEncoder.get() >= (-135)){
 				this.talonLift1.set(0);
 				this.talonLift2.set(0);
 				System.out.println(this.liftEncoder.get());
 				System.out.println("third");
 				this.liftEncoder.reset();
 				liftIsHome = true;
-			} else if (this.liftEncoder.get() <= 0 && this.liftEncoder.get() > (-100) && !liftIsHome){
+			} else if (this.liftEncoder.get() <= 0 && this.liftEncoder.get() > (-125) && !liftIsHome){
 				this.talonLift1.set(-.1);
 				this.talonLift2.set(-.1);
 				System.out.println(this.liftEncoder.get());
 				System.out.println("second");
-			} else if (this.liftEncoder.get() > 0 || this.liftEncoder.get() < (-110) && !liftIsHome){
+			} else if (this.liftEncoder.get() > 0 || this.liftEncoder.get() < (-135) && !liftIsHome){
 				this.liftEncoder.reset();
 				this.talonLift1.set(0);
 				this.talonLift2.set(0);	
