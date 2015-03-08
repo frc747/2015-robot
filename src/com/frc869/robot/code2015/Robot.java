@@ -118,23 +118,30 @@ public class Robot extends SampleRobot {
 		
 		
 		while (isAutonomous() && isEnabled()){
+//			atonomus picks up garbage can and moves backwards
+//			if (this.rightFront.getPosition() > -100 && !this.move1Done) {
+//				this.mecanumDrive.drive(0, -.15, 0, 0);
+//				if (this.rightFront.getPosition() <=-100) {
+//					this.move1Done = true;
+//				}
+//			} else if (this.liftEncoder.get() < 10500 ){
+//				this.lift.move(.7);
+//				this.mecanumDrive.drive(0, 0, 0, 0);
+//			}
+//			else if (this.rightFront.getPosition() < (1000 * 4) && this.liftEncoder.get() >= 10500 ) {
+//				this.lift.move(0);
+//				this.mecanumDrive.drive(0, .5, 0, 0);
+//			} else {
+//				this.lift.move(0);
+//				this.mecanumDrive.drive(0, 0, 0, 0);
+//			} //end atonomus pick up garbage can and move backwards
 			
-			if (this.rightFront.getPosition() > -100 && !this.move1Done) {
-				this.mecanumDrive.drive(0, -.15, 0, 0);
-				if (this.rightFront.getPosition() <=-100) {
-					this.move1Done = true;
-				}
-			} else if (this.liftEncoder.get() < 10500 ){
-				this.lift.move(.7);
-				this.mecanumDrive.drive(0, 0, 0, 0);
-			}
-			else if (this.rightFront.getPosition() < (1000 * 4) && this.liftEncoder.get() >= 10500 ) {
-				this.lift.move(0);
+			//atonomus just drives backwards
+			if (this.rightFront.getPosition() < (1000 * 4)) {
 				this.mecanumDrive.drive(0, .5, 0, 0);
 			} else {
-				this.lift.move(0);
 				this.mecanumDrive.drive(0, 0, 0, 0);
-			}
+			}//end atonomus just drives backwards
 
 			// while(this.rightFront.getPosition() < 1080)
 			// this.mecanumDrive.drive(1, 0, 0, 0);
