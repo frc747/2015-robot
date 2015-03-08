@@ -139,7 +139,7 @@ public class CleanLift implements Runnable {
 	
 	//Calibrate lower position
 	
-	public void calibrateDown(DigitalInput liftLowerLimit, Encoder liftEncoder){
+	public void calibrateDown(DigitalInput liftLowerLimit, Encoder liftEncoder, Double speed){
 //		this.moveToDest = false;
 //		//distance past lower limit for lower home position
 //		double homePosition = 150;
@@ -164,7 +164,6 @@ public class CleanLift implements Runnable {
 		
 		
 		
-		
 //		if (this.lowerLimit.get()){
 //			this.talonLift1.set(-.1);
 //			this.talonLift2.set(-.1);
@@ -177,12 +176,12 @@ public class CleanLift implements Runnable {
 //		}
 		
 		if (this.lowerLimit.get()){
-			this.talonLift1.set(-.1);
-			this.talonLift2.set(-.1);
+			this.talonLift1.set(speed);
+			this.talonLift2.set(speed);
 			System.out.println("LIMIT");
 			System.out.println(this.liftEncoder.get());
 			liftIsHome = false;
-		}else{
+		} else {
 			
 			if (this.liftEncoder.get() <= (-125) && this.liftEncoder.get() >= (-135)){
 				this.talonLift1.set(0);
@@ -192,8 +191,8 @@ public class CleanLift implements Runnable {
 				this.liftEncoder.reset();
 				liftIsHome = true;
 			} else if (this.liftEncoder.get() <= 0 && this.liftEncoder.get() > (-125) && !liftIsHome){
-				this.talonLift1.set(-.1);
-				this.talonLift2.set(-.1);
+				this.talonLift1.set(speed);
+				this.talonLift2.set(speed);
 				System.out.println(this.liftEncoder.get());
 				System.out.println("second");
 			} else if (this.liftEncoder.get() > 0 || this.liftEncoder.get() < (-135) && !liftIsHome){

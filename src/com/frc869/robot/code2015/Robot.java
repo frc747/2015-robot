@@ -183,6 +183,7 @@ public class Robot extends SampleRobot {
 			double lift2Position = 2000;
 			double lift3Position = 3000;
 			double lift4Position = 4000;
+			double speed = 0;
 			
 		
 //			
@@ -230,15 +231,19 @@ public class Robot extends SampleRobot {
 			output1 = String.valueOf(left);
 			output2 = String.valueOf(right);
 			
-			if (this.operatorController.getRawButton(9)){
-				System.out.println(output1 + "left");
-				System.out.println(output2 + "right");
-			}
+//			if (this.operatorController.getRawButton(9)){
+//				System.out.println(output1 + "left");
+//				System.out.println(output2 + "right");
+//			}
 			
 			
 			//COMPETITION ROBOT VALUES
-			if(this.operatorController.getRawButton(10)) {
-				this.lift.calibrateDown(liftLimDown, liftEncoder);
+			if(this.operatorController.getRawButton(10) && this.operatorController.getRawButton(9) ) {
+				speed = (-.6);
+				this.lift.calibrateDown(liftLimDown, liftEncoder, speed);
+			} else if (this.operatorController.getRawButton(10) ){
+				speed = (-.1);
+				this.lift.calibrateDown(liftLimDown, liftEncoder, speed);
 			} else if (this.operatorController.getRawButton(4)){
 				if (this.liftEncoder.get() < 28500){
 					this.lift.move(.70);
