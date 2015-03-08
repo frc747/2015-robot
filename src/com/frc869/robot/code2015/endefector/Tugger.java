@@ -45,18 +45,26 @@ public class Tugger implements Runnable{
 	
 	//Moving out at a given speed
 	
-	public void move(double speed){
+	public void moveL(double speed){
 
 		if(speed>0){
 			this.tuggerLeft.set(speed);
-			this.tuggerRight.set(speed);
 		} else if(speed < 0) {
 			this.tuggerLeft.set(speed);
-			this.tuggerRight.set(speed);
 		} else {
 			this.tuggerLeft.set(0);
-			this.tuggerRight.set(0);
+		}
 	}
+		
+	public void moveR(double speed){
+
+		if(speed>0){
+			this.tuggerRight.set(speed);
+		} else if(speed < 0) {
+			this.tuggerRight.set(speed);
+		} else {
+			this.tuggerRight.set(0);
+		}
 		
 		
 		
@@ -90,67 +98,67 @@ public class Tugger implements Runnable{
 //		
 //		this.positionNum = this.positions.length - 1;
 		///////////////////////////////////////////////////////////////////////////////////
-		this.tugLeftLimit = tugLeftLim;
-		this.tugRightLimit = tugRightLim;
-		
-		
-				////HOME LEFT TUGGER
-		if (this.tugLeftLimit.get()){
-			this.tuggerLeft.set(-.1);
-			System.out.println(this.tuggerLeft.getPosition());
-			leftTuggerIsHome = false;
-		}else{
-			
-			if (this.tuggerLeft.getPosition() <= (-100) && this.tuggerLeft.getPosition() >= (-110)){
-				this.tuggerLeft.set(0);
-				System.out.println(this.tuggerLeft.getPosition());
-				System.out.println("third");
-				this.tuggerLeft.setPosition(0);
-				leftTuggerIsHome = true;
-			} else if (this.tuggerLeft.getPosition() <= 0 && this.tuggerLeft.getPosition() > (-100) && !leftTuggerIsHome){
-				this.tuggerLeft.set(-.1);
-				System.out.println(this.tuggerLeft.getPosition());
-				System.out.println("second");
-			} else if (this.tuggerLeft.getPosition() > 0 || this.tuggerLeft.getPosition() < (-110) && !leftTuggerIsHome){
-				this.tuggerLeft.setPosition(0);
-				this.tuggerLeft.set(0);
-				System.out.println(this.tuggerLeft.getPosition());
-				System.out.println("first"); 
-			}
-
-		}
-		
-		/////HOME RIGHT TUGGER
-		if (this.tugRightLimit.get()){
-			this.tuggerRight.set(-.1);
-			System.out.println(this.tuggerRight.getPosition());
-			rightTuggerIsHome = false;
-		}else{
-			
-			if (this.tuggerRight.getPosition() <= (-100) && this.tuggerRight.getPosition() >= (-110)){
-				this.tuggerRight.set(0);
-				System.out.println(this.tuggerRight.getPosition());
-				System.out.println("third");
-				this.tuggerRight.setPosition(0);
-				rightTuggerIsHome = true;
-			} else if (this.tuggerRight.getPosition() <= 0 && this.tuggerRight.getPosition() > (-100) && !rightTuggerIsHome){
-				this.tuggerRight.set(-.1);
-				System.out.println(this.tuggerRight.getPosition());
-				System.out.println("second");
-			} else if (this.tuggerRight.getPosition() > 0 || this.tuggerRight.getPosition() < (-110) && !rightTuggerIsHome){
-				this.tuggerRight.setPosition(0);
-				this.tuggerRight.set(0);
-				System.out.println(this.tuggerRight.getPosition());
-				System.out.println("first"); 
-			}
-
-		}
-		
+//		this.tugLeftLimit = tugLeftLim;
+//		this.tugRightLimit = tugRightLim;
+//		
+//		
+//				////HOME LEFT TUGGER
+//		if (this.tugLeftLimit.get()){
+//			this.tuggerLeft.set(-.1);
+//			System.out.println(this.tuggerLeft.getPosition());
+//			leftTuggerIsHome = false;
+//		}else{
+//			
+//			if (this.tuggerLeft.getPosition() <= (-100) && this.tuggerLeft.getPosition() >= (-110)){
+//				this.tuggerLeft.set(0);
+//				System.out.println(this.tuggerLeft.getPosition());
+//				System.out.println("third");
+//				this.tuggerLeft.setPosition(0);
+//				leftTuggerIsHome = true;
+//			} else if (this.tuggerLeft.getPosition() <= 0 && this.tuggerLeft.getPosition() > (-100) && !leftTuggerIsHome){
+//				this.tuggerLeft.set(-.1);
+//				System.out.println(this.tuggerLeft.getPosition());
+//				System.out.println("second");
+//			} else if (this.tuggerLeft.getPosition() > 0 || this.tuggerLeft.getPosition() < (-110) && !leftTuggerIsHome){
+//				this.tuggerLeft.setPosition(0);
+//				this.tuggerLeft.set(0);
+//				System.out.println(this.tuggerLeft.getPosition());
+//				System.out.println("first"); 
+//			}
+//
+//		}
+//		
+//		/////HOME RIGHT TUGGER
+//		if (this.tugRightLimit.get()){
+//			this.tuggerRight.set(-.1);
+//			System.out.println(this.tuggerRight.getPosition());
+//			rightTuggerIsHome = false;
+//		}else{
+//			
+//			if (this.tuggerRight.getPosition() <= (-100) && this.tuggerRight.getPosition() >= (-110)){
+//				this.tuggerRight.set(0);
+//				System.out.println(this.tuggerRight.getPosition());
+//				System.out.println("third");
+//				this.tuggerRight.setPosition(0);
+//				rightTuggerIsHome = true;
+//			} else if (this.tuggerRight.getPosition() <= 0 && this.tuggerRight.getPosition() > (-100) && !rightTuggerIsHome){
+//				this.tuggerRight.set(-.1);
+//				System.out.println(this.tuggerRight.getPosition());
+//				System.out.println("second");
+//			} else if (this.tuggerRight.getPosition() > 0 || this.tuggerRight.getPosition() < (-110) && !rightTuggerIsHome){
+//				this.tuggerRight.setPosition(0);
+//				this.tuggerRight.set(0);
+//				System.out.println(this.tuggerRight.getPosition());
+//				System.out.println("first"); 
+//			}
+//
+//		}
+//		
 		
 		
 		
 		//////////////////////////////////////////////////////////////////////////////////////////////////////
-		//TO DO reset encoder
+
 	}
 	
 	//Calibrate inner position

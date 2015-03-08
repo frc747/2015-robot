@@ -48,7 +48,7 @@ public class Robot extends SampleRobot {
 	private DigitalInput tugLeftLim, tugRightLim, liftLimUp, liftLimDown;
 	private Tugger tuggers;
 	private CleanLift lift;
-
+	private boolean move1Done;
 	
 	
 	// Creates the object "Robot"
@@ -108,35 +108,55 @@ public class Robot extends SampleRobot {
 	//*********************************************************************	
 
 	public void autonomous() {
+
 		this.rightFront.setPosition(0);
 		this.rightBack.setPosition(0);
 		this.leftFront.setPosition(0);
 		this.leftBack.setPosition(0);
 		this.mecanumDrive.enable();
+		this.move1Done = false;
 		
-		if (this.rightFront.getPosition() < (250*3.3333)){
-			this.mecanumDrive.drive(0, .5, 0, 0);
-		} else {
-			this.mecanumDrive.drive(0, 0, 0, 0);
+		
+		while (isAutonomous() && isEnabled()){
+			
+			if (this.rightFront.getPosition() > -100 && !this.move1Done) {
+				this.mecanumDrive.drive(0, -.15, 0, 0);
+				if (this.rightFront.getPosition() <=-100) {
+					this.move1Done = true;
+				}
+			} else if (this.liftEncoder.get() < 10500 ){
+				this.lift.move(.7);
+				this.mecanumDrive.drive(0, 0, 0, 0);
+			}
+			else if (this.rightFront.getPosition() < (1000 * 4) && this.liftEncoder.get() >= 10500 ) {
+				this.lift.move(0);
+				this.mecanumDrive.drive(0, .5, 0, 0);
+			} else {
+				this.lift.move(0);
+				this.mecanumDrive.drive(0, 0, 0, 0);
+			}
+
+			// while(this.rightFront.getPosition() < 1080)
+			// this.mecanumDrive.drive(1, 0, 0, 0);
+			// while(this.rightFront.getPosition() < 2160)
+			// this.mecanumDrive.drive(0, 1, 0, 0);
+			// while(this.rightFront.getPosition() > 1080)
+			// this.mecanumDrive.drive(-1, 0, 0, 0);
+			// while(this.rightFront.getPosition() > 0){
+			// System.out.println(this.rightFront.getPosition());
+			// this.mecanumDrive.drive(0, -1, 0, 0);
+			// }
+			// System.out.println("Done!");
+			// this.mecanumDrive.drive(0, 0, 0, 0);
+			// this.leftBack.set(0);
+			// this.leftFront.set(0);
+			// this.rightBack.set(0);
+			// this.rightFront.set(0);
+			//
+	
 		}
 		
-//		while(this.rightFront.getPosition() < 1080)
-//			this.mecanumDrive.drive(1, 0, 0, 0);
-//		while(this.rightFront.getPosition() < 2160)
-//			this.mecanumDrive.drive(0, 1, 0, 0);
-//		while(this.rightFront.getPosition() > 1080)
-//			this.mecanumDrive.drive(-1, 0, 0, 0);
-//		while(this.rightFront.getPosition() > 0){
-//			System.out.println(this.rightFront.getPosition());
-//			this.mecanumDrive.drive(0, -1, 0, 0);
-//		}
-//		System.out.println("Done!");
-//		this.mecanumDrive.drive(0, 0, 0, 0);
-//		this.leftBack.set(0);
-//		this.leftFront.set(0);
-//		this.rightBack.set(0);
-//		this.rightFront.set(0);
-//		
+		
 		this.mecanumDrive.disable();
 		
 	}
@@ -168,7 +188,7 @@ public class Robot extends SampleRobot {
 //			
 			
 			//reduce controller input by X% for drive
-			this.mecanumDrive.drive((x*.65), (y*.65), (z*.65), 0);
+			this.mecanumDrive.drive((x*.5), (y*.5), (z*.5), 0);
 			
 //			if(this.operatorController.getRawButton(1)){
 //				System.out.println(this.liftEncoder.get());
@@ -198,8 +218,21 @@ public class Robot extends SampleRobot {
 //				this.lift.move(0);
 //			}
 			
-			if (this.operatorController.getRawButton(7)){
-				System.out.println(this.liftEncoder.get());
+//			if (this.operatorController.getRawButton(7)){
+//				System.out.println(this.liftEncoder.get());
+//			}
+			
+			String output1;
+			String output2;
+			Double left = this.talonLeftTugger.getPosition();
+			Double right = this.talonRightTugger.getPosition();
+			
+			output1 = String.valueOf(left);
+			output2 = String.valueOf(right);
+			
+			if (this.operatorController.getRawButton(9)){
+				System.out.println(output1 + "left");
+				System.out.println(output2 + "right");
 			}
 			
 			
@@ -260,47 +293,71 @@ public class Robot extends SampleRobot {
 //				this.lift.move(0);
 //			}
 			
-			if (this.operatorController.getRawButton(6)){
-				System.out.println(this.talonLeftTugger.getPosition());
-				System.out.println(this.talonRightTugger.getPosition());
-			} else if (this.operatorController.getRawButton(8)){
-				this.talonLeftTugger.setPosition(0);
-				this.talonRightTugger.setPosition(0);
-			}
+//			if (this.operatorController.getRawButton(6)){
+//				System.out.println(this.talonLeftTugger.getPosition());
+//				System.out.println(this.talonRightTugger.getPosition());
+//			} else if (this.operatorController.getRawButton(8)){
+//				this.talonLeftTugger.setPosition(0);
+//				this.talonRightTugger.setPosition(0);
+//			}
 			
 			//TUGGER MOVING CODE
 			
 			if(this.operatorController.getRawButton(11)) {
 				this.tuggers.calibrate(tugLeftLim, tugRightLim);
 				
-			} else if (this.operatorController.getRawButton(5)){
-					//tuggers in
-//				this.tuggers.move(.5);
-				
-				if (this.tuggerLeftEncoder.get() < 5078){
-					this.tuggers.move(.5);
-				} else if (this.tuggerLeftEncoder.get() < 5203 && this.tuggerLeftEncoder.get() > 5078){
-					this.tuggers.move(.25);
-				} else if (this.tuggerLeftEncoder.get() < 5453){
-					this.tuggers.move(.1);
-				} else {
-					this.tuggers.move(0);
-				}
 			} else if (this.operatorController.getRawButton(7)){
-				
-				//tuggers out
-//				this.tuggers.move(-.5);
-								
-				if (this.tuggerLeftEncoder.get() > 250){
-					this.tuggers.move(-.5);
-				} else if (this.tuggerLeftEncoder.get() < 250 && this.tuggerLeftEncoder.get() > 125){
-					this.tuggers.move(-.25);
-				} else if (this.tuggerLeftEncoder.get() > 0){
-					this.tuggers.move(-.1);
+				if (this.talonLeftTugger.getPosition() < 19812){
+					this.tuggers.moveL(-1);
+				} else if (this.talonLeftTugger.getPosition() < 20312 && this.talonLeftTugger.getPosition() > 19812){
+					this.tuggers.moveL(-.5);
+				} else if (this.talonLeftTugger.getPosition() < 21812){
+					this.tuggers.moveL(-.25);
+				} else {
+					this.tuggers.moveL(0);
+				}
+			} else if (this.operatorController.getRawButton(5)){
+					if (this.talonLeftTugger.getPosition() > 2000){
+					this.tuggers.moveL(1);
+				} else if (this.talonLeftTugger.getPosition() < 2000 && this.talonLeftTugger.getPosition() > 500){
+					this.tuggers.moveL(.5);
+				} else if (this.talonLeftTugger.getPosition() > 0){
+					this.tuggers.moveL(.25);
+				} else {
+					this.tuggers.moveL(0);
 				}
 				
 			} else {
-				this.tuggers.move(0);
+				this.tuggers.moveL(0);
+			}
+			
+
+
+			//MOVE RIGHT TUGGER
+			
+			if (this.operatorController.getRawButton(8)){
+				if (this.talonRightTugger.getPosition() < 19812){
+					this.tuggers.moveR(-1);
+				} else if (this.talonRightTugger.getPosition() < 20312 && this.talonRightTugger.getPosition() > 19812){
+					this.tuggers.moveR(-.5);
+				} else if (this.talonRightTugger.getPosition() < 21812){
+					this.tuggers.moveR(-.25);
+				} else {
+					this.tuggers.moveR(0);
+				}
+			} else if (this.operatorController.getRawButton(6)){
+					if (this.talonRightTugger.getPosition() > 2000){
+					this.tuggers.moveR(1);
+				} else if (this.talonRightTugger.getPosition() < 2000 && this.talonRightTugger.getPosition() > 500){
+					this.tuggers.moveR(.5);
+				} else if (this.talonRightTugger.getPosition() > 0){
+					this.tuggers.moveR(.25);
+				} else {
+					this.tuggers.moveR(0);
+				}
+				
+			} else {
+				this.tuggers.moveR(0);
 			}
 			
 			
