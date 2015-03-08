@@ -184,12 +184,21 @@ public class Robot extends SampleRobot {
 			double lift3Position = 3000;
 			double lift4Position = 4000;
 			double speed = 0;
+			double driveMultiplyer;
 			
 		
 //			
 			
 			//reduce controller input by X% for drive
-			this.mecanumDrive.drive((x*.5), (y*.5), (z*.5), 0);
+			if (driverController.getRawButton(5)){
+				driveMultiplyer = .75;
+			}else if (driverController.getRawButton(6)){
+				driveMultiplyer = 1;
+			} else{
+				driveMultiplyer = .5;
+			}
+			
+			this.mecanumDrive.drive((x*driveMultiplyer), (y*driveMultiplyer), (z*driveMultiplyer), 0);
 			
 //			if(this.operatorController.getRawButton(1)){
 //				System.out.println(this.liftEncoder.get());
