@@ -171,7 +171,7 @@ public class Robot extends SampleRobot {
 	public void operatorControl() {
 		this.mecanumDrive.enable();
 		this.gyro.reset();
-		this.preset = false; 
+		this.preset = false;
 		while (isOperatorControl() && isEnabled()) {
 
 			// Get variables from Driver Controller joysticks. Will be used to
@@ -374,14 +374,19 @@ public class Robot extends SampleRobot {
 			} else {
 				this.tuggers.moveR(0);
 			}
-			if (this.operatorController.getRawButton(3) && this.liftEncoder.get() < 9000 && !this.preset) {
+			if (this.operatorController.getRawButton(3)
+					&& this.liftEncoder.get() < 9000 && !this.preset) {
 				this.lift.move(.7);
-				}
-			if (this.liftEncoder.get() >= 9000){
+			}
+			if (this.liftEncoder.get() >= 9000) {
 				this.preset = true;
 			}
+			if (this.preset == true) {
+				this.lift.move(-.4);
+
+			}
+			this.mecanumDrive.disable();
 		}
-		this.mecanumDrive.disable();
 	}
 
 	public void test() {
