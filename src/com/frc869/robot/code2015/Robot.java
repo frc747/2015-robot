@@ -49,7 +49,7 @@ public class Robot extends SampleRobot {
 	private boolean preset;
 	private boolean presetSwitch;
 	//limit switch enable with tote contact disables when reaches 9000
-
+	private boolean presetToggle;
 	// Creates the object "Robot"
 	public Robot() {
 
@@ -176,6 +176,7 @@ public class Robot extends SampleRobot {
 		this.mecanumDrive.enable();
 		this.gyro.reset();
 		this.preset = false;
+		this.presetToggle = false;
 		while (isOperatorControl() && isEnabled()) {
 
 			// Get variables from Driver Controller joysticks. Will be used to
@@ -380,6 +381,11 @@ public class Robot extends SampleRobot {
 			}
 
 			// Preset code by Kevin
+			if (this.operatorController.getRawButton(3)){
+				this.presetToggle = true;
+			}
+			if (this.presetToggle){
+				
 			if (!this.presetLim.get()){
 				this.presetSwitch = true;
 			}
@@ -399,11 +405,16 @@ public class Robot extends SampleRobot {
 				this.preset = false;
 
 			}
-
+			}
 			// preset ends
 			this.mecanumDrive.disable();
 		}
 	}
+	private boolean getRawbutton(int i) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 	public void test() {
 
 	}
