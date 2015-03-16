@@ -113,9 +113,25 @@ public class Robot extends SampleRobot {
 		this.leftBack.setPosition(0);
 		this.mecanumDrive.enable();
 		this.move1Done = false;
-
+//<<<<<<< HEAD
+//
+//		while (isAutonomous() && isEnabled()) {
+//			// Autonomous picks up garbage can and moves backwards
+//			if (this.rightFront.getPosition() > -100 && !this.move1Done) {
+//				this.mecanumDrive.drive(0, -.15, 0, 0);
+//				if (this.rightFront.getPosition() <= -100) {
+//					this.move1Done = true;
+//				}
+//			} else if (this.liftEncoder.get() < 10500) {
+//				this.lift.move(.7);
+//				this.mecanumDrive.drive(0, 0, 0, 0);
+//			} else if (this.rightFront.getPosition() < (1000 * 4)
+//					&& this.liftEncoder.get() >= 10500) {
+//=======
+		
+		
 		while (isAutonomous() && isEnabled()) {
-			// Autonomous picks up garbage can and moves backwards
+
 			if (this.rightFront.getPosition() > -100 && !this.move1Done) {
 				this.mecanumDrive.drive(0, -.15, 0, 0);
 				if (this.rightFront.getPosition() <= -100) {
@@ -133,32 +149,8 @@ public class Robot extends SampleRobot {
 				this.mecanumDrive.drive(0, 0, 0, 0);
 			} // end Autonomous pick up garbage can and move backwards
 
-			// Autonomous just drives backwards
-			// if (this.rightFront.getPosition() < (1000 * 4)) {
-			// this.mecanumDrive.drive(0, .5, 0, 0);
-			// } else {
-			// this.mecanumDrive.drive(0, 0, 0, 0);
-			// }//end Autonomous just drives backwards
-
-			// while(this.rightFront.getPosition() < 1080)
-			// this.mecanumDrive.drive(1, 0, 0, 0);
-			// while(this.rightFront.getPosition() < 2160)
-			// this.mecanumDrive.drive(0, 1, 0, 0);
-			// while(this.rightFront.getPosition() > 1080)
-			// this.mecanumDrive.drive(-1, 0, 0, 0);
-			// while(this.rightFront.getPosition() > 0){
-			// System.out.println(this.rightFront.getPosition());
-			// this.mecanumDrive.drive(0, -1, 0, 0);
-			// }
-			// System.out.println("Done!");
-			// this.mecanumDrive.drive(0, 0, 0, 0);
-			// this.leftBack.set(0);
-			// this.leftFront.set(0);
-			// this.rightBack.set(0);
-			// this.rightFront.set(0);
-			//
-
 		}
+
 
 		this.mecanumDrive.disable();
 
