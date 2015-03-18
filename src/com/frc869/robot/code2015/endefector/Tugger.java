@@ -70,33 +70,9 @@ public class Tugger implements Runnable{
 		
 	}
 	
-	//Moving to next outer position
-	
-//	public void nextOut(){
-//		if(this.positionNum < this.positions.length - 1){
-//			this.positionNum++;
-//			this.moveToDest = true;
-//		}
-//	}
-	
-	//Moving to next inner position
-	
-//	public void nextIn(){
-//		if(this.positionNum > 0){
-//			this.positionNum--;
-//			this.moveToDest = true;
-//		}
-//	}
-	
-	//Calibrate outer position
 	
 	public void calibrate(DigitalInput tugLeftLim, DigitalInput tugRightLim){
-//		this.moveToDest = false;
-//		while(this.outterLimit.get()){
-//			this.motor.set(1 * this.direction);
-//		}
-//		
-//		this.positionNum = this.positions.length - 1;
+
 		///////////////////////////////////////////////////////////////////////////////////
 //		this.tugLeftLimit = tugLeftLim;
 //		this.tugRightLimit = tugRightLim;
@@ -126,108 +102,16 @@ public class Tugger implements Runnable{
 //				System.out.println("first"); 
 //			}
 //
-//		}
-//		
-//		/////HOME RIGHT TUGGER
-//		if (this.tugRightLimit.get()){
-//			this.tuggerRight.set(-.1);
-//			System.out.println(this.tuggerRight.getPosition());
-//			rightTuggerIsHome = false;
-//		}else{
-//			
-//			if (this.tuggerRight.getPosition() <= (-100) && this.tuggerRight.getPosition() >= (-110)){
-//				this.tuggerRight.set(0);
-//				System.out.println(this.tuggerRight.getPosition());
-//				System.out.println("third");
-//				this.tuggerRight.setPosition(0);
-//				rightTuggerIsHome = true;
-//			} else if (this.tuggerRight.getPosition() <= 0 && this.tuggerRight.getPosition() > (-100) && !rightTuggerIsHome){
-//				this.tuggerRight.set(-.1);
-//				System.out.println(this.tuggerRight.getPosition());
-//				System.out.println("second");
-//			} else if (this.tuggerRight.getPosition() > 0 || this.tuggerRight.getPosition() < (-110) && !rightTuggerIsHome){
-//				this.tuggerRight.setPosition(0);
-//				this.tuggerRight.set(0);
-//				System.out.println(this.tuggerRight.getPosition());
-//				System.out.println("first"); 
-//			}
-//
-//		}
-//		
-		
-		
-		
+//		}		
 		//////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	}
 	
-	//Calibrate inner position
-	
-//	public void calibrateIn(){
-//		this.moveToDest = false;
-//		while(this.innerLimit.get()){
-//			this.motor.set(-1 * this.direction);
-//		}
-//		
-//		//Gives calibrating process a starting point/default position
-//		
-//		this.positionNum = 0;
-//		
-//		//TODO reset encoder
-//	}
-
-	//Automated moving control, sets to preset positions
 	
 	@Override
 	public void run() {
-//		while(this.running){
-//			if(this.moveToDest){
-//				if(!this.innerLimit.get() && this.positions[positionNum] > this.motor.getPosition()){
-//					double reduction = 0;
-//
-//					if (this.motor.getPosition() - this.encoderMin > .9*(encoderMax - encoderMin) && speed > 0){
-//						reduction = (this.motor.getPosition() - encoderMin) / (.1 * (encoderMax - encoderMin));
-//					}else if((this.motor.getPosition() - this.positions[positionNum]) < .1 * (encoderMax - encoderMin)){
-//						reduction = (this.motor.getPosition() - this.positions[positionNum]) / (.1 * (encoderMax - encoderMin));
-//					}
-//					reduction *= -.9;
-//					this.motor.set(-0.5 * this.direction - reduction);
-//				}else if(!this.outterLimit.get() && this.positions[positionNum] < this.motor.getPosition()){
-//					double reduction = 0;
-//
-//					if(this.motor.getPosition() - this.encoderMin  < .1 *(encoderMax - encoderMin) && speed < 0){
-//						reduction = (this.motor.getPosition() - encoderMin) / (.1 * (encoderMax - encoderMin));
-//					}else if((this.positions[positionNum] - this.motor.getPosition()) < .1 * (encoderMax - encoderMin)){
-//						reduction = (this.positions[positionNum] - this.motor.getPosition()) / (.1 * (encoderMax - encoderMin));
-//					}
-//					reduction *= .9;
-//					this.motor.set(0.5 * this.direction - reduction);
-//				}else{
-//					this.moveToDest = false;
-//				}
-//			}else{
-//				double reduction = 0;
-//				if (this.motor.getPosition() -  this.encoderMin > .9*(encoderMax - encoderMin) && speed > 0){
-//					reduction = (encoderMax - this.motor.getPosition()) / (.1 * (encoderMax - encoderMin));
-//					reduction *= .9;
-//				}else if(this.motor.getPosition() - this.encoderMin  < .1 *(encoderMax - encoderMin) && speed < 0){
-//					reduction = (this.motor.getPosition() - encoderMin) / (.1 * (encoderMax - encoderMin));
-//					reduction *= -.9;
-//				}	
-//				this.motor.set(this.speed - reduction);
-//			}
-//			
-//		}
+
 	}
 	
-//	public void on(){
-//		this.running = true;
-//		this.motor.enableControl();
-//	}
-//
-//	public void off() {
-//		this.running = false;
-//		this.motor.disable();
-//	}
 
 }

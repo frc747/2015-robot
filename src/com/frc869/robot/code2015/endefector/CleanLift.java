@@ -19,16 +19,7 @@ public class CleanLift implements Runnable {
 	private Encoder encoder, liftEncoder;
 	private DigitalInput lowerLimit, upperLimit;
 	private double speed;
-	public enum Position {
-		TOTE1(1000),TOTE2(2000),TOTE3(3000),TOTE4(4000);
-		private double encoderValue;
-		private Position(double encoderValue) {
-			this.encoderValue = encoderValue;
-		}
-		public double getEncoderValue() {
-			return encoderValue;
-		}
-	};
+	
 	
 //	private boolean moveToDest = false;
 //	private boolean running = false;
@@ -71,109 +62,56 @@ public class CleanLift implements Runnable {
 		}
 	}
 	
-	public void setPosition(double position, Encoder liftEncoder) {
+	public void setPosition(double position) {
 		
-//		if(encoder.get()>position.getEncoderValue()) {
-//			//5 percent away from the goal make 25% speed instead of full so we dont overshoot
-//			if((encoder.get()-position.getEncoderValue()/(encoder.get()+position.getEncoderValue())/2)>.05) {
-//				move(-1);
-//			} else {
-//				move(-.25);
-//			}
-//		} else if (encoder.get()<position.getEncoderValue()) {
-//			//5 percent away from the goal make 25% speed instead of full so we dont overshoot
-//			if((encoder.get()-position.getEncoderValue()/(encoder.get()+position.getEncoderValue())/2)>.05) {
-//				move(1);
-//			} else {
-//				move(.25);
-//			}
-//		} else {
-//			move(0);
-//		}
-		double currentLocation = liftEncoder.get();
-		
-		
-		
+		double slowSpeed = .25;
+		double fastSpeed = .7;
+		double buffer = 100;
 		
 	
-		if (position > currentLocation){
-			if (position - currentLocation < 100){
-				this.talonLift1.set(.2);
-				this.talonLift2.set(.2);
+		
+		
+		
+		if (this.liftEncoder.get() > position) {
+
+			if ((this.liftEncoder.get() - position) > buffer) {
+				this.talonLift1.set((slowSpeed * (-1)));
+				this.talonLift2.set((slowSpeed * (-1)));
 			} else {
-				this.talonLift1.set(.5);
-				this.talonLift2.set(.5);
+				this.talonLift1.set((fastSpeed * (-1)));
+				this.talonLift2.set((fastSpeed * (-1)));
 			}
-		} else if (position < currentLocation){
-			if (currentLocation - position < 100){
-				this.talonLift1.set(-.2);
-				this.talonLift2.set(-.2);
+
+		} else if (this.liftEncoder.get() < position) {
+
+			if ((position - this.liftEncoder.get()) < buffer) {
+				this.talonLift1.set(slowSpeed);
+				this.talonLift2.set(slowSpeed);
 			} else {
-				this.talonLift1.set(-.5);
-				this.talonLift2.set(-.5);
+				this.talonLift1.set(fastSpeed);
+				this.talonLift2.set(fastSpeed);
 			}
+
 		} else {
 			this.talonLift1.set(0);
 			this.talonLift2.set(0);
 		}
 		
+		
+		
+		
+		
 	}
 
 	
 	
-	
-	//Calibrate upper position
-	
-//	public void calibrateUp(){
-//		this.moveToDest = false;
-//		while(this.upperLimit.get()){
-//			this.talonLift1.set(1);
-//			this.talonLift2.set(1);
-//		}
-//		
-////		this.positionNum = this.positions.length - 1;
-//		
-//		//TODO reset encoder
-//		
-//	}
-	
 	//Calibrate lower position
 	
 	public void calibrateDown(DigitalInput liftLowerLimit, Encoder liftEncoder, Double speed){
-//		this.moveToDest = false;
-//		//distance past lower limit for lower home position
-//		double homePosition = 150;
-//		
-//		
-//		while(this.lowerLimit.get()){
-//			this.talonLift1.set(-.35);
-//			this.talonLift2.set(-.35);
-//		}
-//		
-//		//move X distance past lower limit for actual "0" (home position)
-//		if(homePosition - this.encoder.get() > 0){
-//			this.talonLift1.set(-.2);
-//			this.talonLift2.set(-.2);
-//		}else{
-//			this.talonLift1.set(0);
-//			this.talonLift2.set(0);
-//		}
-//		this.encoder.reset();
-//		this.positionNum = 0;
+
+		
 		this.liftEncoder = liftEncoder;
 		
-		
-		
-//		if (this.lowerLimit.get()){
-//			this.talonLift1.set(-.1);
-//			this.talonLift2.set(-.1);
-//			System.out.println("LIMIT");
-//			System.out.println(this.liftEncoder.get());
-//			liftIsHome = false;
-//		}else{
-//			this.talonLift1.set(0);
-//			this.talonLift2.set(0);
-//		}
 		
 		if (this.lowerLimit.get()){
 			this.talonLift1.set(speed);
