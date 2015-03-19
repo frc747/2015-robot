@@ -62,36 +62,43 @@ public class CleanLift implements Runnable {
 		}
 	}
 	
-	public void setPosition(double position) {
+	public void setPosition(double position, Encoder liftEncoder) {
 		
-		double slowSpeed = .25;
+		double slowSpeed = .15;
 		double fastSpeed = .7;
 		double buffer = 100;
-		
+		this.liftEncoder = liftEncoder;
 	
 		
 		
-		
-		if (this.liftEncoder.get() > position) {
+		if (this.liftEncoder.get() < position + 100 && this.liftEncoder.get() > position - 100) {
+			this.talonLift1.set(0);
+			this.talonLift2.set(0);
+		} else if (this.liftEncoder.get() > position) {
 
-			if ((this.liftEncoder.get() - position) > buffer) {
-				this.talonLift1.set((slowSpeed * (-1)));
-				this.talonLift2.set((slowSpeed * (-1)));
-			} else {
+//			if ((this.liftEncoder.get() - position) < buffer) {
+//				this.talonLift1.set((slowSpeed * (-1)));
+//				this.talonLift2.set((slowSpeed * (-1)));
+//			} else if((position - this.liftEncoder.get()) > buffer) {
 				this.talonLift1.set((fastSpeed * (-1)));
 				this.talonLift2.set((fastSpeed * (-1)));
-			}
+//			} else {
+//				this.talonLift1.set(0);
+//				this.talonLift2.set(0);
+//			}
 
 		} else if (this.liftEncoder.get() < position) {
 
-			if ((position - this.liftEncoder.get()) < buffer) {
-				this.talonLift1.set(slowSpeed);
-				this.talonLift2.set(slowSpeed);
-			} else {
+//			if ((position - this.liftEncoder.get()) < buffer) {
+//				this.talonLift1.set(slowSpeed);
+//				this.talonLift2.set(slowSpeed);
+//			} else if((position - this.liftEncoder.get()) > buffer){
 				this.talonLift1.set(fastSpeed);
 				this.talonLift2.set(fastSpeed);
-			}
-
+//			}else {
+//				this.talonLift1.set(0);
+//				this.talonLift2.set(0);
+//			}
 		} else {
 			this.talonLift1.set(0);
 			this.talonLift2.set(0);
