@@ -5,6 +5,7 @@ package com.frc869.robot.code2015.endefector;
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
+import com.frc869.robot.code2015.Robot;
 
 /**
  * Code responsible for commanding the lift, which lifts the totes after they've been "Tugged"
@@ -19,6 +20,8 @@ public class CleanLift implements Runnable {
 	private Encoder encoder, liftEncoder;
 	private DigitalInput lowerLimit, upperLimit;
 	private double speed;
+	private Robot robot;
+	
 	
 	
 //	private boolean moveToDest = false;
@@ -71,34 +74,17 @@ public class CleanLift implements Runnable {
 	
 		
 		
-		if (this.liftEncoder.get() < position + 100 && this.liftEncoder.get() > position - 100) {
+		if (this.liftEncoder.get() < position + buffer && this.liftEncoder.get() > position - buffer) {
 			this.talonLift1.set(0);
 			this.talonLift2.set(0);
 		} else if (this.liftEncoder.get() > position) {
-
-//			if ((this.liftEncoder.get() - position) < buffer) {
-//				this.talonLift1.set((slowSpeed * (-1)));
-//				this.talonLift2.set((slowSpeed * (-1)));
-//			} else if((position - this.liftEncoder.get()) > buffer) {
 				this.talonLift1.set((fastSpeed * (-1)));
 				this.talonLift2.set((fastSpeed * (-1)));
-//			} else {
-//				this.talonLift1.set(0);
-//				this.talonLift2.set(0);
-//			}
-
+				this.robot.rumbleController(1);
 		} else if (this.liftEncoder.get() < position) {
-
-//			if ((position - this.liftEncoder.get()) < buffer) {
-//				this.talonLift1.set(slowSpeed);
-//				this.talonLift2.set(slowSpeed);
-//			} else if((position - this.liftEncoder.get()) > buffer){
 				this.talonLift1.set(fastSpeed);
 				this.talonLift2.set(fastSpeed);
-//			}else {
-//				this.talonLift1.set(0);
-//				this.talonLift2.set(0);
-//			}
+				this.robot.rumbleController(1);
 		} else {
 			this.talonLift1.set(0);
 			this.talonLift2.set(0);
