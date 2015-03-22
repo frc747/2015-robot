@@ -5,7 +5,7 @@ package com.frc869.robot.code2015.endefector;
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
-import com.frc869.robot.code2015.Robot;
+import edu.wpi.first.wpilibj.Joystick;
 
 /**
  * Code responsible for commanding the lift, which lifts the totes after they've been "Tugged"
@@ -20,7 +20,7 @@ public class CleanLift implements Runnable {
 	private Encoder encoder, liftEncoder;
 	private DigitalInput lowerLimit, upperLimit;
 	private double speed;
-	private Robot robot;
+	private Joystick operatorController;
 	
 	
 	
@@ -45,7 +45,7 @@ public class CleanLift implements Runnable {
 		this.encoder = encoder;
 		this.lowerLimit = lowerLimit;
 		this.upperLimit = upperLimit;
-		
+		this.operatorController = new Joystick(2);
 		this.encoderMin = encMin;
 		this.encoderMax = encMax;
 	}
@@ -56,41 +56,68 @@ public class CleanLift implements Runnable {
 		if(speed>0){
 				this.talonLift1.set(speed);
 				this.talonLift2.set(speed);
+				this.operatorController.setRumble(Joystick.RumbleType.kLeftRumble, 1);
+				this.operatorController.setRumble(Joystick.RumbleType.kRightRumble, 1);
 		} else if(speed < 0) {
 				this.talonLift1.set(speed);
 				this.talonLift2.set(speed);
+				this.operatorController.setRumble(Joystick.RumbleType.kLeftRumble, 1);
+				this.operatorController.setRumble(Joystick.RumbleType.kRightRumble, 1);
 		} else {
 			this.talonLift1.set(0);
 			this.talonLift2.set(0);
+			this.operatorController.setRumble(Joystick.RumbleType.kLeftRumble, 0);
+			this.operatorController.setRumble(Joystick.RumbleType.kRightRumble, 0);
 		}
 	}
 	
-	public void setPosition(double position, Encoder liftEncoder) {
+	public void setPosition(double position, Encoder liftEncoder, double slowDownPosi1, double slowDownPosi2) {
 		
-		double slowSpeed = .15;
+		double slowSpeed2 = .1;
+		double slowSpeed1 = .25;
 		double fastSpeed = .7;
 		double buffer = 100;
 		this.liftEncoder = liftEncoder;
+//		this.robot = robot;
 	
 		
-		
-		if (this.liftEncoder.get() < position + buffer && this.liftEncoder.get() > position - buffer) {
+		if (this.liftEncoder.get() < position + buffer
+				&& this.liftEncoder.get() > position - buffer) {
 			this.talonLift1.set(0);
 			this.talonLift2.set(0);
+			this.operatorController.setRumble(Joystick.RumbleType.kLeftRumble, 0);
+			this.operatorController.setRumble(Joystick.RumbleType.kRightRumble, 0);
 		} else if (this.liftEncoder.get() > position) {
-				this.talonLift1.set((fastSpeed * (-1)));
-				this.talonLift2.set((fastSpeed * (-1)));
-				this.robot.rumbleController(1);
+			this.talonLift1.set((fastSpeed * (-1)));
+			this.talonLift2.set((fastSpeed * (-1)));
+			this.operatorController.setRumble(Joystick.RumbleType.kLeftRumble, 1);
+			this.operatorController.setRumble(Joystick.RumbleType.kRightRumble, 1);
 		} else if (this.liftEncoder.get() < position) {
-				this.talonLift1.set(fastSpeed);
-				this.talonLift2.set(fastSpeed);
-				this.robot.rumbleController(1);
+			this.talonLift1.set(fastSpeed);
+			this.talonLift2.set(fastSpeed);
+			this.operatorController.setRumble(Joystick.RumbleType.kLeftRumble, 1);
+			this.operatorController.setRumble(Joystick.RumbleType.kRightRumble, 1);
+		} else if (this.liftEncoder.get() <= 0) {
+			this.talonLift1.set(0);
+			this.talonLift2.set(0);
+			this.operatorController.setRumble(Joystick.RumbleType.kLeftRumble, 0);
+			this.operatorController.setRumble(Joystick.RumbleType.kRightRumble, 0);
+		} else if (this.liftEncoder.get() < slowDownPosi2) {
+			this.talonLift1.set(slowSpeed1);
+			this.talonLift2.set(slowSpeed1);
+			this.operatorController.setRumble(Joystick.RumbleType.kLeftRumble, 1);
+			this.operatorController.setRumble(Joystick.RumbleType.kRightRumble, 1);
+		} else if (this.liftEncoder.get() < slowDownPosi1) {
+			this.talonLift1.set(slowSpeed2);
+			this.talonLift2.set(slowSpeed2);
+			this.operatorController.setRumble(Joystick.RumbleType.kLeftRumble, 1);
+			this.operatorController.setRumble(Joystick.RumbleType.kRightRumble, 1);
 		} else {
 			this.talonLift1.set(0);
 			this.talonLift2.set(0);
+			this.operatorController.setRumble(Joystick.RumbleType.kLeftRumble, 0);
+			this.operatorController.setRumble(Joystick.RumbleType.kRightRumble, 0);
 		}
-		
-		
 		
 		
 		
@@ -109,6 +136,8 @@ public class CleanLift implements Runnable {
 		if (this.lowerLimit.get()){
 			this.talonLift1.set(speed);
 			this.talonLift2.set(speed);
+			this.operatorController.setRumble(Joystick.RumbleType.kLeftRumble, 1);
+			this.operatorController.setRumble(Joystick.RumbleType.kRightRumble, 1);
 			System.out.println("LIMIT");
 			System.out.println(this.liftEncoder.get());
 			liftIsHome = false;
@@ -117,6 +146,8 @@ public class CleanLift implements Runnable {
 			if (this.liftEncoder.get() <= (-125) && this.liftEncoder.get() >= (-135)){
 				this.talonLift1.set(0);
 				this.talonLift2.set(0);
+				this.operatorController.setRumble(Joystick.RumbleType.kLeftRumble, 0);
+				this.operatorController.setRumble(Joystick.RumbleType.kRightRumble, 0);
 				System.out.println(this.liftEncoder.get());
 				System.out.println("third");
 				this.liftEncoder.reset();
@@ -124,10 +155,14 @@ public class CleanLift implements Runnable {
 			} else if (this.liftEncoder.get() <= 0 && this.liftEncoder.get() > (-125) && !liftIsHome){
 				this.talonLift1.set(speed);
 				this.talonLift2.set(speed);
+				this.operatorController.setRumble(Joystick.RumbleType.kLeftRumble, 0);
+				this.operatorController.setRumble(Joystick.RumbleType.kRightRumble, 0);
 				System.out.println(this.liftEncoder.get());
 				System.out.println("second");
 			} else if (this.liftEncoder.get() > 0 || this.liftEncoder.get() < (-135) && !liftIsHome){
 				this.liftEncoder.reset();
+				this.operatorController.setRumble(Joystick.RumbleType.kLeftRumble, 0);
+				this.operatorController.setRumble(Joystick.RumbleType.kRightRumble, 0);
 				this.talonLift1.set(0);
 				this.talonLift2.set(0);	
 				System.out.println(this.liftEncoder.get());
