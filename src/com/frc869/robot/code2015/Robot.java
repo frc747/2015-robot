@@ -190,9 +190,17 @@ public class Robot extends SampleRobot {
 			double speed = 0;
 			double driveMultiplyer;
 			
-			
-			
-			
+			if (liftRoutine){
+				System.out.println("LIFT ROUTINE ENABLED");
+				if (liftStep1){
+					System.out.println("LIFT STEP1 DONE");
+				}
+				if (liftStep2){
+					System.out.println("LIFT STEP2 DONE");
+				}
+			} else if (!liftRoutine){
+				System.out.println("LIFT ROUTINE DISABLED");
+			}
 			
 
 
@@ -218,7 +226,7 @@ public class Robot extends SampleRobot {
 			output1 = String.valueOf(left);
 			output2 = String.valueOf(right);
 
-
+			
 			
 			
 //			if ( this.operatorController.getRawButton(1)){
@@ -257,8 +265,9 @@ public class Robot extends SampleRobot {
 				liftRoutine = false;
 				speed = (-.1);
 				this.lift.calibrateDown(liftLimDown, liftEncoder, speed);
-			} else if (this.operatorController.getY() <= -.1) {
+			} else if (this.operatorController.getY() <= -.5) {
 				liftRoutine = false;
+				System.out.println("lift moved up");
 				if (this.liftEncoder.get() < (liftDistanceUp - liftSlowDownPosi1)) {
 					this.lift.move(.70);
 				} else if (this.liftEncoder.get() < (liftDistanceUp - liftSlowDownPosi2)
@@ -269,8 +278,9 @@ public class Robot extends SampleRobot {
 				} else {
 					this.lift.move(0);
 				}
-			} else if (this.operatorController.getY() >= .1) {
+			} else if (this.operatorController.getY() >= .5) {
 				liftRoutine = false;
+				System.out.println("Lift moved down");
 				if (this.liftEncoder.get() > liftSlowDownPosi1) {
 					this.lift.move(-.70);
 				} else if (this.liftEncoder.get() < liftSlowDownPosi1
@@ -311,6 +321,12 @@ public class Robot extends SampleRobot {
 				lift.move(0);
 			}
 			
+			if (!liftRoutine){
+				liftStep1 = false;
+				liftStep2 = false;
+				disableTugger = false;
+			}
+			
 ////////////////////////end here nmofo////////
 			
 			//TUGGER DISABLEMENT
@@ -334,12 +350,12 @@ public class Robot extends SampleRobot {
 			if ((this.operatorController.getRawButton(5))
 					&& (this.operatorController.getRawButton(6))
 					&& (!this.toteHomeLeft.get())
-					&& (!this.toteHomeRight.get()) && (!disableTugger)
+					&& (!this.toteHomeRight.get()) && (!liftRoutine)
 					&& (this.liftEncoder.get() < liftPosition2 + 1000)) {
 				liftRoutine = true;
 				liftStep1 = false;
 				liftStep2 = false;
-			} else if (this.operatorController.getRawAxis(2) >= (.1)
+			} else if (this.operatorController.getRawAxis(2) >= (.3)
 					&& !disableTugger) {
 
 				if (this.talonLeftTugger.getPosition() >= tugDistanceOutL) {
@@ -384,7 +400,7 @@ public class Robot extends SampleRobot {
 
 			// MOVE RIGHT TUGGER
 
-			if (this.operatorController.getRawAxis(3) >= (.1) && !disableTugger) {
+			if (this.operatorController.getRawAxis(3) >= (.3) && !disableTugger) {
 				
 				if (this.talonRightTugger.getPosition() >= tugDistanceOutR) {
 					this.tuggers.moveR(0);

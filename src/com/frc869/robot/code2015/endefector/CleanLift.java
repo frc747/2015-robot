@@ -143,7 +143,7 @@ public class CleanLift implements Runnable {
 			liftIsHome = false;
 		} else {
 			
-			if (this.liftEncoder.get() <= (-62) && this.liftEncoder.get() >= (-72)){
+			if (this.liftEncoder.get() <= (-125) && this.liftEncoder.get() >= (-135)){
 				this.talonLift1.set(0);
 				this.talonLift2.set(0);
 				this.operatorController.setRumble(Joystick.RumbleType.kLeftRumble, 0);
@@ -152,14 +152,14 @@ public class CleanLift implements Runnable {
 				System.out.println("third");
 				this.liftEncoder.reset();
 				liftIsHome = true;
-			} else if (this.liftEncoder.get() <= 0 && this.liftEncoder.get() > (-62) && !liftIsHome){
+			} else if (this.liftEncoder.get() <= 0 && this.liftEncoder.get() > (-125) && !liftIsHome){
 				this.talonLift1.set(speed);
 				this.talonLift2.set(speed);
 				this.operatorController.setRumble(Joystick.RumbleType.kLeftRumble, 0);
 				this.operatorController.setRumble(Joystick.RumbleType.kRightRumble, 0);
 				System.out.println(this.liftEncoder.get());
 				System.out.println("second");
-			} else if (this.liftEncoder.get() > 0 || this.liftEncoder.get() < (-72) && !liftIsHome){
+			} else if (this.liftEncoder.get() > 0 || this.liftEncoder.get() < (-135) && !liftIsHome){
 				this.liftEncoder.reset();
 				this.operatorController.setRumble(Joystick.RumbleType.kLeftRumble, 0);
 				this.operatorController.setRumble(Joystick.RumbleType.kRightRumble, 0);
