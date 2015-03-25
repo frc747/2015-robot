@@ -154,6 +154,7 @@ public class Robot extends SampleRobot {
 		boolean liftRoutine = false;
 		boolean liftStep1 = false;
 		boolean liftStep2 = false;
+		boolean disableTugger = false;
 		
 		
 		while (isOperatorControl() && isEnabled()) {
@@ -172,8 +173,8 @@ public class Robot extends SampleRobot {
 			double tugSlowDownPosi2 = 500;
 			double tugSlowDownPosi3 = 100;
 			
-			double tugDistanceOutL = 21812;
-			double tugDistanceOutR = 21812;
+			double tugDistanceOutL = 20812;
+			double tugDistanceOutR = 20812;
 			
 			//PRACTICE ROBOT LIFT VALUES
 //			double liftDistanceUp = 29250;					
@@ -312,7 +313,15 @@ public class Robot extends SampleRobot {
 			
 ////////////////////////end here nmofo////////
 			
-
+			//TUGGER DISABLEMENT
+			
+			if (liftRoutine && liftStep1 && this.liftEncoder.get() >= 2000 ){
+				disableTugger = false;
+			} else if (liftRoutine && !liftStep1){
+				disableTugger = true;
+			} else {
+				disableTugger = false;
+			}
 			
 
 			// TUGGER MOVING CODE
@@ -325,13 +334,13 @@ public class Robot extends SampleRobot {
 			if ((this.operatorController.getRawButton(5))
 					&& (this.operatorController.getRawButton(6))
 					&& (!this.toteHomeLeft.get())
-					&& (!this.toteHomeRight.get()) && (!liftRoutine)
+					&& (!this.toteHomeRight.get()) && (!disableTugger)
 					&& (this.liftEncoder.get() < liftPosition2 + 1000)) {
 				liftRoutine = true;
 				liftStep1 = false;
 				liftStep2 = false;
 			} else if (this.operatorController.getRawAxis(2) >= (.1)
-					&& !liftRoutine) {
+					&& !disableTugger) {
 
 				if (this.talonLeftTugger.getPosition() >= tugDistanceOutL) {
 					this.tuggers.moveL(0);
@@ -345,7 +354,7 @@ public class Robot extends SampleRobot {
 				} else {
 					this.tuggers.moveL(0);
 				}
-			} else if (this.operatorController.getRawButton(5) && !liftRoutine) {
+			} else if (this.operatorController.getRawButton(5) && !disableTugger) {
 
 				if (this.talonLeftTugger.getPosition() <= 0) {
 					this.tuggers.moveL(0);
@@ -353,10 +362,10 @@ public class Robot extends SampleRobot {
 						&& this.talonLeftTugger.getPosition() < tugDistanceOutL) {
 					this.tuggers.moveL(.25);
 					System.out.println("5stop1");
-				} else if (this.talonLeftTugger.getPosition() > tugSlowDownPosi1) {
-					this.tuggers.moveL(1);
+				} else if (this.talonLeftTugger.getPosition() > (tugSlowDownPosi1)) {
+					this.tuggers.moveL(.7);
 					System.out.println("5stop2");
-				} else if (this.talonLeftTugger.getPosition() < tugSlowDownPosi2) {
+				} else if (this.talonLeftTugger.getPosition() < (tugSlowDownPosi2)) {
 					this.tuggers.moveL(.5);
 					System.out.println("5stop3");
 				} else if (this.talonLeftTugger.getPosition() < tugSlowDownPosi1
@@ -375,7 +384,7 @@ public class Robot extends SampleRobot {
 
 			// MOVE RIGHT TUGGER
 
-			if (this.operatorController.getRawAxis(3) >= (.1) && !liftRoutine) {
+			if (this.operatorController.getRawAxis(3) >= (.1) && !disableTugger) {
 				
 				if (this.talonRightTugger.getPosition() >= tugDistanceOutR) {
 					this.tuggers.moveR(0);
@@ -389,15 +398,15 @@ public class Robot extends SampleRobot {
 				} else {
 					this.tuggers.moveR(0);
 				}
-			} else if (this.operatorController.getRawButton(6) && !liftRoutine) {
+			} else if (this.operatorController.getRawButton(6) && !disableTugger) {
 				if (this.talonRightTugger.getPosition() <= 0) {
 					this.tuggers.moveR(0);
 				} else if (this.talonRightTugger.getPosition() > (tugDistanceOutR - tugSlowDownPosi3)
 						&& this.talonRightTugger.getPosition() < tugDistanceOutR) {
 					this.tuggers.moveR(.25);
-				} else if (this.talonRightTugger.getPosition() > tugSlowDownPosi1) {
-					this.tuggers.moveR(1);
-				}  else if (this.talonRightTugger.getPosition() < tugSlowDownPosi2) {
+				} else if (this.talonRightTugger.getPosition() > (tugSlowDownPosi1)) {
+					this.tuggers.moveR(.7);
+				}  else if (this.talonRightTugger.getPosition() < (tugSlowDownPosi2)) {
 					this.tuggers.moveR(.5);
 				}  else if (this.talonRightTugger.getPosition() < tugSlowDownPosi1
 						&& this.talonRightTugger.getPosition() > tugSlowDownPosi2) {
