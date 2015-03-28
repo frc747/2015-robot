@@ -44,7 +44,7 @@ public class Robot extends SampleRobot {
 	private DigitalInput tugLeftLim, tugRightLim, liftLimUp, liftLimDown, toteHomeLeft, toteHomeRight;
 	private Tugger tuggers;
 	private CleanLift lift;
-	private boolean move1Done;
+	private boolean move1Done, move2Done, move3Done, move4Done, move5Done, move6Done, move7Done;
 
 	// limit switch enable with tote contact disables when reaches 9000
 
@@ -113,6 +113,12 @@ public class Robot extends SampleRobot {
 		this.leftBack.setPosition(0);
 		this.mecanumDrive.enable();
 		this.move1Done = false;
+		this.move2Done = false;
+		this.move3Done = false;
+		this.move4Done = false;
+		this.move5Done = false;
+		this.move6Done = false;
+		this.move7Done = false;
 		
 		
 
@@ -123,14 +129,28 @@ public class Robot extends SampleRobot {
 				if (this.rightFront.getPosition() <= -100) {
 					this.move1Done = true;
 				}
-			} else if (this.liftEncoder.get() < 10500) {
+			} else if (this.liftEncoder.get() < 10500 && !this.move2Done) {
 				this.lift.move(.7);
 				this.mecanumDrive.drive(0, 0, 0, 0);
 			} else if (this.rightFront.getPosition() < (1000 * 4)
 					&& this.liftEncoder.get() >= 10500) {
+				this.move2Done = true;
 				this.lift.move(0);
 				this.mecanumDrive.drive(0, .5, 0, 0);
+			} else if (this.liftEncoder.get() > 9964) {
+				this.lift.move(-.7);
+			} else if (this.talonLeftTugger.getPosition() < 5300
+					|| this.talonRightTugger.getPosition() < 5300) {
+				this.talonLeftTugger.set(-.5);
+				this.talonRightTugger.set(-.5);
+				this.lift.move(0);
+//			} else if (this.liftEncoder.get() > 4000) {
+//				this.talonLeftTugger.set(0);
+//				this.talonRightTugger.set(0);
+//				this.lift.move(-.7);
 			} else {
+				this.talonRightTugger.set(0);
+				this.talonLeftTugger.set(0);
 				this.lift.move(0);
 				this.mecanumDrive.drive(0, 0, 0, 0);
 			} // end Autonomous pick up garbage can and move backwards
@@ -343,8 +363,7 @@ public class Robot extends SampleRobot {
 			// TUGGER MOVING CODE
 
 			if (this.operatorController.getRawButton(9)){
-				System.out.println(this.liftEncoder.get());
-				System.out.println("LIFT HEIGHT");
+				System.out.println(this.liftEncoder.get() + ":LIFT HEIGHT    " + this.talonLeftTugger.getPosition() + ":LeftTugger    " + this.talonRightTugger.getPosition() + ":TuggerRight");
 			}
 			
 			if ((this.operatorController.getRawButton(5))
