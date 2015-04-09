@@ -45,6 +45,10 @@ public class Robot extends SampleRobot {
 	private Tugger tuggers;
 	private CleanLift lift;
 	private boolean move1Done, move2Done, move3Done, move4Done, move5Done, move6Done, move7Done;
+	private double liftPosition1 = 0;
+	private double liftPosition2 = 10863;
+	private double liftPosition3 = 7897;
+	private double liftPosition4 = 22416;
 
 	// limit switch enable with tote contact disables when reaches 9000
 
@@ -139,11 +143,13 @@ public class Robot extends SampleRobot {
 				this.mecanumDrive.drive(0, .5, 0, 0);
 			} else if (this.liftEncoder.get() > 9964) {
 				this.lift.move(-.7);
+				this.mecanumDrive.drive(0, 0, 0, 0);
 			} else if (this.talonLeftTugger.getPosition() < 5300
 					|| this.talonRightTugger.getPosition() < 5300) {
 				this.talonLeftTugger.set(-.5);
 				this.talonRightTugger.set(-.5);
 				this.lift.move(0);
+				this.mecanumDrive.drive(0, 0, 0, 0);
 //			} else if (this.liftEncoder.get() > 4000) {
 //				this.talonLeftTugger.set(0);
 //				this.talonRightTugger.set(0);
@@ -170,6 +176,8 @@ public class Robot extends SampleRobot {
 	public void operatorControl() {
 		this.mecanumDrive.enable();
 		this.gyro.reset();
+	
+		
 //		this.preset = false;
 		boolean liftRoutine = false;
 		boolean liftStep1 = false;
@@ -202,13 +210,11 @@ public class Robot extends SampleRobot {
 			//COMPETITION ROBOT LIFT VALUES
 			double liftDistanceUp = 29000;
 			
-			double liftPosition1 = 0;
-			double liftPosition2 = 10863;
-			double liftPosition3 = 7897;
-			double liftPosition4 = 22416;
+	
 			
 			double speed = 0;
 			double driveMultiplyer;
+			
 			
 			if (liftRoutine){
 				System.out.println("LIFT ROUTINE ENABLED");
@@ -289,7 +295,7 @@ public class Robot extends SampleRobot {
 				liftRoutine = false;
 				System.out.println("lift moved up");
 				if (this.liftEncoder.get() < (liftDistanceUp - liftSlowDownPosi1)) {
-					this.lift.move(.70);
+					this.lift.move(1);
 				} else if (this.liftEncoder.get() < (liftDistanceUp - liftSlowDownPosi2)
 						&& this.liftEncoder.get() > (liftDistanceUp - liftSlowDownPosi1)) {
 					this.lift.move(.25);
@@ -302,7 +308,7 @@ public class Robot extends SampleRobot {
 				liftRoutine = false;
 				System.out.println("Lift moved down");
 				if (this.liftEncoder.get() > liftSlowDownPosi1) {
-					this.lift.move(-.70);
+					this.lift.move(-1);
 				} else if (this.liftEncoder.get() < liftSlowDownPosi1
 						&& this.liftEncoder.get() > liftSlowDownPosi2) {
 					this.lift.move(-.25);

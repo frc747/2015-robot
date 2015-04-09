@@ -75,7 +75,7 @@ public class CleanLift implements Runnable {
 		
 		double slowSpeed2 = .1;
 		double slowSpeed1 = .25;
-		double fastSpeed = .7;
+		double fastSpeed = 1;
 		double buffer = 100;
 		this.liftEncoder = liftEncoder;
 //		this.robot = robot;
