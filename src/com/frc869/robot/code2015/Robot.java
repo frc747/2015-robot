@@ -42,9 +42,9 @@ public class Robot extends SampleRobot {
 	private Mecanum869 mecanumDrive;
 	private Joystick driverController, operatorController;
 	private Gyro gyro;
-	private Encoder liftEncoder;
+	private Encoder liftEncoder, tuggerLeftEncoder, tuggerRightEncoder;
 	private DigitalInput tugLeftLim, tugRightLim, liftLimUp, liftLimDown,
-			toteHomeLeft, toteHomeRight, coreySwitch, dirtyCoreySwitch, landfillSwitch;
+			toteHomeLeft, toteHomeRight;
 	private Tugger tuggers;
 	private CleanLift lift;
 	private boolean move1Done, move2Done, move3Done, move4Done, move5Done,
@@ -53,20 +53,6 @@ public class Robot extends SampleRobot {
 	private double liftPosition2 = 10863;
 	private double liftPosition3 = 7897;
 	private double liftPosition4 = 22416;
-	private double liftPosition5 = 17740;
-	private boolean coreyButton, dirtyCoreyButton, landfillButton;
-	
-
-
-	// TUGGER/LIFT SOFT LIMIT VALUES
-	double liftSlowDownPosi1 = 300;
-	double liftSlowDownPosi2 = 150;
-	double tugSlowDownPosi1 = 1000;
-	double tugSlowDownPosi2 = 500;
-	double tugSlowDownPosi3 = 100;
-
-	double tugDistanceOutL = 20812;
-	double tugDistanceOutR = 20812;
 
 	// limit switch enable with tote contact disables when reaches 9000
 
@@ -85,15 +71,7 @@ public class Robot extends SampleRobot {
 		this.talonLift2 = new CANTalon(5);
 
 		this.talonRightTugger.setPosition(0);
-		this.talonRightTugger.setForwardSoftLimit(99999999);
-		this.talonRightTugger.setReverseSoftLimit(-99999999);
-		this.talonRightTugger.enableForwardSoftLimit(true);
-		this.talonRightTugger.enableReverseSoftLimit(true);
 		this.talonLeftTugger.setPosition(0);
-		this.talonLeftTugger.setForwardSoftLimit(99999999);
-		this.talonLeftTugger.setReverseSoftLimit(-99999999);
-		this.talonLeftTugger.enableForwardSoftLimit(true);
-		this.talonLeftTugger.enableReverseSoftLimit(true);
 
 		// Custom Mecanum Drive
 		this.mecanumDrive = new Mecanum869(this.rightFront, this.rightBack,
@@ -119,10 +97,6 @@ public class Robot extends SampleRobot {
 		// this.tugRightLim = new DigitalInput(5);
 		this.toteHomeLeft = new DigitalInput(3);
 		this.toteHomeRight = new DigitalInput(4);
-		
-		this.coreySwitch = new DigitalInput(5);
-		this.dirtyCoreySwitch = new DigitalInput(6);
-		this.landfillSwitch = new DigitalInput(7);
 
 		this.lift = new CleanLift(talonLift1, talonLift2, liftEncoder,
 				liftLimDown, liftLimUp, LiftMax, LiftMax);
@@ -142,7 +116,7 @@ public class Robot extends SampleRobot {
 	}
 
 	public double getClicksForDrive(double inches, boolean talon) {
-		double driveGear = 1;
+		double driveGear = 12.75;
 		double wheelGear = 1;
 		double wheelDiameter = 6;
 		int clicksPerRotation = 250;
@@ -154,7 +128,7 @@ public class Robot extends SampleRobot {
 	}
 
 	public double getClicksForAngle(double angle, boolean talon) {
-		double wheelBase = 32.625;
+		double wheelBase = (32 * 8 + 5) / 8;
 		double clicksPerInch = getClicksForDrive(1, talon);
 		return ((angle / 360F) * (clicksPerInch * Math.PI * wheelBase));
 
@@ -169,144 +143,128 @@ public class Robot extends SampleRobot {
 		this.mecanumDrive.enable();
 		resetDrivePosition();
 
-//		AutonomousMode mode = AutonomousMode.DISABLE;
-//		
-//		boolean coreyButton = SmartDashboard.getBoolean("DB/Button 0", this.coreySwitch.get());
-//		boolean dirtyCoreyButton = SmartDashboard.getBoolean("DB/Button 1", this.dirtyCoreySwitch.get());
-//		boolean landfillButton = SmartDashboard.getBoolean("DB/Button 2", this.landfillSwitch.get());
-		
-//		if (coreyButton) {
-//			mode = AutonomousMode.COREY;
-//		} else if (dirtyCoreyButton) {
-//			mode = AutonomousMode.DIRTY_COREY;
-//		} else if (landfillButton) {
-//			mode = AutonomousMode.LANDFILL;
-//		}
+		AutonomousMode mode = AutonomousMode.DISABLE;
+		boolean coreyButton = SmartDashboard.getBoolean("DB/Button 0", false);
+		boolean dirtyCoreyButton = SmartDashboard.getBoolean("DB/Button 1",
+				false);
+		boolean landfillButton = SmartDashboard.getBoolean("DB/Button 2", false);
+		if (coreyButton) {
+			mode = AutonomousMode.COREY;
+		} else if (dirtyCoreyButton) {
+			mode = AutonomousMode.DIRTY_COREY;
+		} else if (landfillButton) {
+			mode = AutonomousMode.LANDFILL;
+		}
 		int step = 0;
 		while (isAutonomous() && isEnabled()) {
-//			System.out.println("Autonomous Mode: "+mode);
-//			switch (mode) {
-//			default:
-//				
-//				break;
-//			case COREY:
-//				switch (step) {
-//				default:
-//					fullStop();
-//					break;
-//				case 0:
-//					this.mecanumDrive.drive(0, -.15, 0, 0);
-//					if (this.rightFront.getPosition() <= -100) {
-//						this.mecanumDrive.drive(0, 0, 0, 0);
-//						step++;
-//					}
-//					break;
-//				case 1:
-//					this.lift.move(.9);
-//					if (this.liftEncoder.get() > 10500) {
-//						this.lift.move(0);
-//						step++;
-//					}
-//					break;
-//				case 2:
-//					this.mecanumDrive.drive(0, .5, 0, 0);
-//					if (this.rightFront.getPosition() >= (1000 * 4)) {
-//						this.mecanumDrive.drive(0, 0, 0, 0);
-//						step++;
-//					}
-//					break;
-//				case 3:
-//					this.lift.move(-.7);
-//					if (this.liftEncoder.get() <= 9964) {
-//						this.lift.move(0);
-//						step++;
-//					}
-//					break;
-//				case 4:
-//					this.talonLeftTugger.set(-.5);
-//					this.talonRightTugger.set(-.5);
-//					if (this.talonLeftTugger.getPosition() >= 5300
-//							|| this.talonRightTugger.getPosition() >= 5300) {
-//						this.talonLeftTugger.set(0);
-//						this.talonRightTugger.set(0);
-//						step++;
-//					}
-//					break;
-//				}
-//				break;
-//			case DIRTY_COREY:
-//				switch (step) {
-//				default:
-//					fullStop();
-//					break;
-//				case 0:
-//					this.mecanumDrive.drive(0, -.15, 0, 0);
-//					if (this.rightFront.getPosition() <= -100) {
-//						this.mecanumDrive.drive(0, 0, 0, 0);
-//						step++;
-//					}
-//					break;
-//				case 1:
-//					this.lift.move(.9);
-//					if (this.liftEncoder.get() >= 27500) {
-//						this.lift.move(0);
-//						resetDrivePosition();
-//						step++;
-//					}
-//					break;
-////				case 2:
-////					this.mecanumDrive.drive(0, -.5, 0, 0);
-////					if (this.rightFront.getPosition() < -getClicksForDrive(20,
-////							true)) {
-////						step++;
-////					}
-////					break;
-//				}
-//				break;
-//			case LANDFILL:
-			System.out.println("rightfront: "+this.rightFront.getPosition());
+			switch (mode) {
+			default:
+				
+				break;
+			case COREY:
 				switch (step) {
 				default:
 					fullStop();
 					break;
 				case 0:
-					this.talonRightTugger.set(-1);
-					if (this.talonRightTugger.getPosition() > 15000) {
+					this.mecanumDrive.drive(0, -.15, 0, 0);
+					if (this.rightFront.getPosition() <= -100) {
+						this.mecanumDrive.drive(0, 0, 0, 0);
+						step++;
+					}
+					break;
+				case 1:
+					this.lift.move(.9);
+					if (this.liftEncoder.get() > 10500) {
+						this.lift.move(0);
+						step++;
+					}
+					break;
+				case 2:
+					this.mecanumDrive.drive(0, .5, 0, 0);
+					if (this.rightFront.getPosition() >= (1000 * 4)) {
+						this.mecanumDrive.drive(0, 0, 0, 0);
+						step++;
+					}
+					break;
+				case 3:
+					this.lift.move(-.7);
+					if (this.liftEncoder.get() <= 9964) {
+						this.lift.move(0);
+						step++;
+					}
+					break;
+				case 4:
+					this.talonLeftTugger.set(-.5);
+					this.talonRightTugger.set(-.5);
+					if (this.talonLeftTugger.getPosition() >= 5300
+							|| this.talonRightTugger.getPosition() >= 5300) {
+						this.talonLeftTugger.set(0);
+						this.talonRightTugger.set(0);
+						step++;
+					}
+					break;
+				}
+				break;
+			case DIRTY_COREY:
+				switch (step) {
+				default:
+					fullStop();
+					break;
+				case 0:
+					this.mecanumDrive.drive(0, -.15, 0, 0);
+					if (this.rightFront.getPosition() <= -100) {
+						this.mecanumDrive.drive(0, 0, 0, 0);
+						step++;
+					}
+					break;
+				case 1:
+					this.lift.move(.9);
+					if (this.liftEncoder.get() >= 28000) {
+						this.lift.move(0);
+						resetDrivePosition();
+						step++;
+					}
+					break;
+				case 2:
+					this.mecanumDrive.drive(0, -.5, 0, 0);
+					if (this.rightFront.getPosition() < -getClicksForDrive(8,
+							true)) {
+						step++;
+					}
+					break;
+				}
+				break;
+			case LANDFILL:
+				switch (step) {
+				default:
+					fullStop();
+					break;
+				case 0:
+					this.mecanumDrive.drive(0, -.5, 0, 0);
+					if (this.rightFront.getPosition() < -getClicksForDrive(.5,
+							true)) {
+						this.mecanumDrive.drive(0, 0, 0, 0);
+						step++;
+					}
+					break;
+				case 1:
+					this.talonRightTugger.set(5);
+					if (this.tuggerRightEncoder.get() > 20600) {
 						this.talonRightTugger.set(0);
 						resetDrivePosition();
 						step++;
 					}
 					break;
-				case 1:
-					this.mecanumDrive.drive(0, 0, -1, 0);
-					if (this.rightFront.getPosition() < -getClicksForAngle(180,true)) {
+				case 2:
+					this.mecanumDrive.drive(0, 0, -5, 0);
+					if (this.rightFront.getPosition() > getClicksForAngle(90,true)) {
 						this.mecanumDrive.drive(0, 0, 0, 0);
 						step++;
 					}
 					break;
 				}
-//			switch (step) {
-//			default:
-//				fullStop();
-//				break;
-//			case 0:
-//				this.talonLeftTugger.set(-1);
-//				if (this.talonLeftTugger.getPosition() > 15000) {
-//					this.talonLeftTugger.set(0);
-//					resetDrivePosition();
-//					step++;
-//				}
-//				break;
-//			case 1:
-//				this.mecanumDrive.drive(0, 0, 1, 0);
-//				if (this.rightFront.getPosition() > getClicksForAngle(90,true)) {
-//					this.mecanumDrive.drive(0, 0, 0, 0);
-//					step++;
-//				}
-//				break;
-//			}
-//				break;
-//			}
+			}
 		}
 	}
 
@@ -347,6 +305,16 @@ public class Robot extends SampleRobot {
 			double x = this.driverController.getX();
 			double y = this.driverController.getY();
 			double z = this.driverController.getZ();
+
+			// TUGGER/LIFT SOFT LIMIT VALUES
+			double liftSlowDownPosi1 = 300;
+			double liftSlowDownPosi2 = 150;
+			double tugSlowDownPosi1 = 1000;
+			double tugSlowDownPosi2 = 500;
+			double tugSlowDownPosi3 = 100;
+
+			double tugDistanceOutL = 20812;
+			double tugDistanceOutR = 20812;
 
 			// PRACTICE ROBOT LIFT VALUES
 			// double liftDistanceUp = 29250;
@@ -394,10 +362,6 @@ public class Robot extends SampleRobot {
 				liftRoutine = false;
 				this.lift.setPosition(liftPosition3, liftEncoder,
 						liftSlowDownPosi1, liftSlowDownPosi2);
-			} else if (this.operatorController.getRawButton(3)) {
-				// position 3
-				liftRoutine = false;
-				this.lift.setPosition(liftPosition5, liftEncoder, liftSlowDownPosi1, liftSlowDownPosi2);
 			} else if (this.operatorController.getRawButton(4)) {
 				// position 4
 				liftRoutine = false;
@@ -412,32 +376,6 @@ public class Robot extends SampleRobot {
 				liftRoutine = false;
 				speed = (-.1);
 				this.lift.calibrateDown(liftLimDown, liftEncoder, speed);
-			}  else if (this.operatorController.getPOV()>90 && this.operatorController.getPOV()<270) {
-				liftRoutine = false;
-				System.out.println("Lift moved down");
-				if (this.liftEncoder.get() > liftSlowDownPosi1) {
-					this.lift.move(-.5);
-				} else if (this.liftEncoder.get() < liftSlowDownPosi1
-						&& this.liftEncoder.get() > liftSlowDownPosi2) {
-					this.lift.move(-.25);
-				} else if (this.liftEncoder.get() > 0) {
-					this.lift.move(-.1);
-				} else {
-					this.lift.move(0);
-				}
-			} else if (this.operatorController.getPOV()!=-1) {
-				liftRoutine = false;
-				System.out.println("lift moved up");
-				if (this.liftEncoder.get() < (liftDistanceUp - liftSlowDownPosi1)) {
-					this.lift.move(.5);
-				} else if (this.liftEncoder.get() < (liftDistanceUp - liftSlowDownPosi2)
-						&& this.liftEncoder.get() > (liftDistanceUp - liftSlowDownPosi1)) {
-					this.lift.move(.25);
-				} else if (this.liftEncoder.get() < liftDistanceUp) {
-					this.lift.move(.1);
-				} else {
-					this.lift.move(0);
-				}
 			} else if (this.operatorController.getY() <= -.5) {
 				liftRoutine = false;
 				System.out.println("lift moved up");
@@ -519,27 +457,7 @@ public class Robot extends SampleRobot {
 						+ this.talonRightTugger.getPosition() + ":TuggerRight");
 			}
 
-			if (this.operatorController.getRawAxis(4) <= -.5) {
-				//left
-				liftRoutine = false;
-				leftTuggerForward();
-				rightTuggerBackward();
-			} else if (this.operatorController.getRawAxis(4) >= .5) {
-				//right
-				liftRoutine = false;
-				leftTuggerBackward();
-				rightTuggerForward();
-			} else if (this.operatorController.getRawAxis(5) <= -.5) {
-				//down
-				liftRoutine = false;
-				leftTuggerForward();
-				rightTuggerForward();
-			} else if (this.operatorController.getRawAxis(5) >= .5) {
-				//up
-				liftRoutine = false;
-				leftTuggerBackward();
-				rightTuggerBackward();
-			} else if ((this.operatorController.getRawButton(5))
+			if ((this.operatorController.getRawButton(5))
 					&& (this.operatorController.getRawButton(6))
 					&& (!this.toteHomeLeft.get())
 					&& (!this.toteHomeRight.get()) && (!liftRoutine)
@@ -547,104 +465,93 @@ public class Robot extends SampleRobot {
 				liftRoutine = true;
 				liftStep1 = false;
 				liftStep2 = false;
-			} else {
-				if (this.operatorController.getRawAxis(2) >= (.3) && !disableTugger) {
-					leftTuggerForward();
-				} else if (this.operatorController.getRawButton(5) && !disableTugger) {
-					leftTuggerBackward();
+			} else if (this.operatorController.getRawAxis(2) >= (.3)
+					&& !disableTugger) {
+
+				if (this.talonLeftTugger.getPosition() >= tugDistanceOutL) {
+					this.tuggers.moveL(0);
+				} else if (this.talonLeftTugger.getPosition() < (tugDistanceOutL - tugSlowDownPosi1)) {
+					this.tuggers.moveL(-1);
+				} else if (this.talonLeftTugger.getPosition() < (tugDistanceOutL - tugSlowDownPosi2)
+						&& this.talonLeftTugger.getPosition() > (tugDistanceOutL - tugSlowDownPosi1)) {
+					this.tuggers.moveL(-.5);
+				} else if (this.talonLeftTugger.getPosition() < tugDistanceOutL) {
+					this.tuggers.moveL(-.25);
 				} else {
 					this.tuggers.moveL(0);
 				}
-	
-				// MOVE RIGHT TUGGER
-	
-				if (this.operatorController.getRawAxis(3) >= (.3) && !disableTugger) {
-					rightTuggerForward();
-				} else if (this.operatorController.getRawButton(6) && !disableTugger) {
-					rightTuggerBackward();
+			} else if (this.operatorController.getRawButton(5)
+					&& !disableTugger) {
+
+				if (this.talonLeftTugger.getPosition() <= 0) {
+					this.tuggers.moveL(0);
+				} else if (this.talonLeftTugger.getPosition() > (tugDistanceOutL - tugSlowDownPosi3)
+						&& this.talonLeftTugger.getPosition() < tugDistanceOutL) {
+					this.tuggers.moveL(.25);
+					System.out.println("5stop1");
+				} else if (this.talonLeftTugger.getPosition() > (tugSlowDownPosi1)) {
+					this.tuggers.moveL(.7);
+					System.out.println("5stop2");
+				} else if (this.talonLeftTugger.getPosition() < (tugSlowDownPosi2)) {
+					this.tuggers.moveL(.5);
+					System.out.println("5stop3");
+				} else if (this.talonLeftTugger.getPosition() < tugSlowDownPosi1
+						&& this.talonLeftTugger.getPosition() > tugSlowDownPosi2) {
+					this.tuggers.moveL(.5);
+					System.out.println("5stop4");
+				} else if (this.talonLeftTugger.getPosition() > 0) {
+					this.tuggers.moveL(.25);
+					System.out.println("5stop5");
+				} else {
+					this.tuggers.moveL(0);
+				}
+			} else {
+				this.tuggers.moveL(0);
+			}
+
+			// MOVE RIGHT TUGGER
+
+			if (this.operatorController.getRawAxis(3) >= (.3) && !disableTugger) {
+
+				if (this.talonRightTugger.getPosition() >= tugDistanceOutR) {
+					this.tuggers.moveR(0);
+				} else if (this.talonRightTugger.getPosition() < (tugDistanceOutR - tugSlowDownPosi1)) {
+					this.tuggers.moveR(-1);
+				} else if (this.talonRightTugger.getPosition() < (tugDistanceOutR - tugSlowDownPosi2)
+						&& this.talonRightTugger.getPosition() > (tugDistanceOutR - tugSlowDownPosi1)) {
+					this.tuggers.moveR(-.5);
+				} else if (this.talonRightTugger.getPosition() < tugDistanceOutR) {
+					this.tuggers.moveR(-.25);
 				} else {
 					this.tuggers.moveR(0);
 				}
+			} else if (this.operatorController.getRawButton(6)
+					&& !disableTugger) {
+				if (this.talonRightTugger.getPosition() <= 0) {
+					this.tuggers.moveR(0);
+				} else if (this.talonRightTugger.getPosition() > (tugDistanceOutR - tugSlowDownPosi3)
+						&& this.talonRightTugger.getPosition() < tugDistanceOutR) {
+					this.tuggers.moveR(.25);
+				} else if (this.talonRightTugger.getPosition() > (tugSlowDownPosi1)) {
+					this.tuggers.moveR(.7);
+				} else if (this.talonRightTugger.getPosition() < (tugSlowDownPosi2)) {
+					this.tuggers.moveR(.5);
+				} else if (this.talonRightTugger.getPosition() < tugSlowDownPosi1
+						&& this.talonRightTugger.getPosition() > tugSlowDownPosi2) {
+					this.tuggers.moveR(.5);
+				} else if (this.talonRightTugger.getPosition() > 0) {
+					this.tuggers.moveR(.25);
+				} else {
+					this.tuggers.moveR(0);
+				}
+
+			} else {
+				this.tuggers.moveR(0);
 			}
 
 		}
 
 		this.mecanumDrive.disable();
-	}
-	
-	public void leftTuggerForward() {
-		if (this.talonLeftTugger.getPosition() >= tugDistanceOutL) {
-			this.tuggers.moveL(0);
-		} else if (this.talonLeftTugger.getPosition() < (tugDistanceOutL - tugSlowDownPosi1)) {
-			this.tuggers.moveL(-1);
-		} else if (this.talonLeftTugger.getPosition() < (tugDistanceOutL - tugSlowDownPosi2)
-				&& this.talonLeftTugger.getPosition() > (tugDistanceOutL - tugSlowDownPosi1)) {
-			this.tuggers.moveL(-.5);
-		} else if (this.talonLeftTugger.getPosition() < tugDistanceOutL) {
-			this.tuggers.moveL(-.25);
-		} else {
-			this.tuggers.moveL(0);
-		}
-	}
-	
-	public void rightTuggerForward() {
-		if (this.talonRightTugger.getPosition() >= tugDistanceOutR) {
-			this.tuggers.moveR(0);
-		} else if (this.talonRightTugger.getPosition() < (tugDistanceOutR - tugSlowDownPosi1)) {
-			this.tuggers.moveR(-1);
-		} else if (this.talonRightTugger.getPosition() < (tugDistanceOutR - tugSlowDownPosi2)
-				&& this.talonRightTugger.getPosition() > (tugDistanceOutR - tugSlowDownPosi1)) {
-			this.tuggers.moveR(-.5);
-		} else if (this.talonRightTugger.getPosition() < tugDistanceOutR) {
-			this.tuggers.moveR(-.25);
-		} else {
-			this.tuggers.moveR(0);
-		}
-	}
-	
-	public void leftTuggerBackward() {
-		if (this.talonLeftTugger.getPosition() <= 0) {
-			this.tuggers.moveL(0);
-		} else if (this.talonLeftTugger.getPosition() > (tugDistanceOutL - tugSlowDownPosi3)
-				&& this.talonLeftTugger.getPosition() < tugDistanceOutL) {
-			this.tuggers.moveL(.25);
-			System.out.println("5stop1");
-		} else if (this.talonLeftTugger.getPosition() > (tugSlowDownPosi1)) {
-			this.tuggers.moveL(.7);
-			System.out.println("5stop2");
-		} else if (this.talonLeftTugger.getPosition() < (tugSlowDownPosi2)) {
-			this.tuggers.moveL(.5);
-			System.out.println("5stop3");
-		} else if (this.talonLeftTugger.getPosition() < tugSlowDownPosi1
-				&& this.talonLeftTugger.getPosition() > tugSlowDownPosi2) {
-			this.tuggers.moveL(.5);
-			System.out.println("5stop4");
-		} else if (this.talonLeftTugger.getPosition() > 0) {
-			this.tuggers.moveL(.25);
-			System.out.println("5stop5");
-		} else {
-			this.tuggers.moveL(0);
-		}
-	}
-	
-	public void rightTuggerBackward() {
-		if (this.talonRightTugger.getPosition() <= 0) {
-			this.tuggers.moveR(0);
-		} else if (this.talonRightTugger.getPosition() > (tugDistanceOutR - tugSlowDownPosi3)
-				&& this.talonRightTugger.getPosition() < tugDistanceOutR) {
-			this.tuggers.moveR(.25);
-		} else if (this.talonRightTugger.getPosition() > (tugSlowDownPosi1)) {
-			this.tuggers.moveR(.7);
-		} else if (this.talonRightTugger.getPosition() < (tugSlowDownPosi2)) {
-			this.tuggers.moveR(.5);
-		} else if (this.talonRightTugger.getPosition() < tugSlowDownPosi1
-				&& this.talonRightTugger.getPosition() > tugSlowDownPosi2) {
-			this.tuggers.moveR(.5);
-		} else if (this.talonRightTugger.getPosition() > 0) {
-			this.tuggers.moveR(.25);
-		} else {
-			this.tuggers.moveR(0);
-		}
 	}
 
 	public void rumbleController(float rumbleSpeed) {
